@@ -1,0 +1,244 @@
+---
+title: "Standard analysis"
+author: "Izar de Villasante"
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r dtable}
+#| include: false
+#| eval: true
+dtable<-function(data){
+  DT::datatable(
+        { data},
+        filter = 'top',
+        # selection = list(mode = 'multiple', selected = c(1:10), target = 'column', selectable = c(-2, -3)),
+        fillContainer = F,
+        # style =  "bootstrap",
+
+        extensions = 'Buttons',
+
+        options = list(
+          paging = TRUE,
+          pageLength = 20,
+          searching = TRUE,
+          fixedColumns = TRUE,
+          autoWidth = FALSE,
+          scrollX=TRUE,
+          digits=4,
+          ordering = TRUE,
+          dom = 'Bfrtip',
+          buttons = list(
+            list(
+              extend = "collection",
+              text = 'download entire dataset',
+              action = DT::JS("function ( e, dt, node, config ) {
+                                                    Shiny.setInputValue('test', true, {priority: 'event'});
+                                                    }")
+            ),
+            'copy',
+            'csv',
+            'excel'
+          ),
+
+          class = "display",
+          server=TRUE
+        ),
+      ) |> DT::formatRound(which(sapply(data,is.double)),4)
+}
+```
+
+```{r}
+#| include: false
+#| eval: true
+#| context: server
+myModal <- function() {
+
+  div(id = "test",
+      shiny::modalDialog(downloadButton("download1","Download data as csv"),
+                         br(),
+                         br(),
+                         downloadButton("download2","Download data as excel"),
+                         easyClose = TRUE, title = "Download Table")
+  )
+}
+
+renderDT<- function(data){
+  output$dtable <- DT::renderDataTable({
+    dtable(data)
+  })
+  
+
+    shiny::observeEvent(input$test, {
+      print("hello")
+      showModal(myModal())
+    })
+    output$download1 <- shiny::downloadHandler(
+      filename = function() {
+        paste("data-", Sys.Date(), ".csv", sep="")
+      },
+      content = function(file) {
+        write.csv(data, file)
+      }
+    )
+
+    output$download2 <- shiny::downloadHandler(
+      filename = function() {
+        paste("data-", Sys.Date(), ".xlsx", sep="")
+      },
+      content = function(file) {
+        writexl::write_xlsx(data, file)
+      })
+}
+
+```
+
+
+# Experimental conditions:
+
+There are 2 disease conditions AMN and cerebral (cALD for child cAMN for
+adults) and 2 age groups adults \>=18 & child \<18.
+
+```{r experimental}
+source("R/functions.R")
+library(data.table)
+ss<-readRDS("data/SS.rds")
+ss$age_grp <- "Adult"
+ss[Age < 18, age_grp:="Child"]
+table(ss$age_grp,ss$Condition)
+
+```
+
+The main goal is to study adults and whether the relation between age
+and methylation is different between control and diseased AMN vs
+CTL.adult. A secondary analysis is the inclusion of child subjects,
+which can be included in the second part of the analysis.
+
+# Standard analysis
+
+## Workflow:
+
+The standard analysis has 3 steps:
+
+### 1.Pre-processing:
+
+#### Background correction:
+
+Data is cleaned and filtered before being analysed. The `preprocessNoob`
+function from `minfi` package is used to remove background noise. And a
+visual inspection of the data is done [raw-qc](standard.qmd#sec-qc)
+
+#### Data filtering:
+
+The following filters are applied:
+
+1.  Probes: Only probes with a detection p.value \< 0.01 for each sample
+    are retained. (P-value calculated with `minfi::detectionP()`)
+2.  Sample: Only samples with at least 90% of the probes are retained.
+
+After applying these filters one sample was discarded:
+`r ss[Sentrix_ID =="206702460034"&Sentrix_Position=="R05C01",.(Sample_Name,Condition,Age)]`
+
+```{r}
+ss <- ss[Sample_Name != "lnf-21.5",]
+```
+
+### 2.Differential analysis:
+
+Once data is clean the diffrences in methylation between different
+groups is analysed using regression models. In this case we use the
+limma package and the\
+following models are tested:
+
+#### model 1:
+
+Here we used only adults and created a variable called `Type` , which
+contains 2 groups:
+
+-   disease: merges AMN and cAMN together in a single group.
+
+-   controls: the adult controls.
+
+```{r}
+dtable(ss[age_grp=="Adult", .(Sample_Name,Type)])
+
+```
+
+```{r}
+table(ss[age_grp=="Adult", Type])
+```
+
+Formula: meth \~ 0 + AMN_Type
+
+No difference at probe-level or region level observed.
+
+#### model 2:
+
+Here we used all samples child and adults alike and created the
+`Condition` variable, which contain 5 groups formed by all the possible
+combinations of disease group and age:
+
+-   CTL.adult: Control samples for adults
+
+-   CTL.child: Control samples for childs
+
+-   AMN: Adults with the disease condition 1
+
+-   cAMN: Adults with the disease condition 1 & condition 2
+
+-   cALD: Children with the disease condition 2
+
+```{r}
+dtable(ss[, .(Sample_Name,Condition)])
+
+```
+
+```{r}
+table(ss[, Condition])
+```
+
+Formula: meth \~ 0 + Condition
+
+**This model was statistically significant for the contrast cALD-cAMN. at
+the probe level with 116 DMPs.**
+
+No difference at region level observed.
+
+#### model 3 = m2 + Age as a covariate
+
+Formula: meth \~ 0 + Condition + Age
+
+No difference at probe-level or region level observed.
+
+### 3. Pathway analysis{#sec-pathway}
+
+There were only significant results for model 2 at individual probe
+level:
+
+![Pathway analysis from genes associated to DMPs in model 2 (meth \~ 0 +
+Condition).](data/pathways_m2_camd-cald.png){alt="Pathway analysis from genes associated to DMPs in model 2."}
+
+## Discussion
+
+We performed a [Standard methylation
+analysis](standard.qmd#sec-workflow), following the usual workflow.
+
+From this analysis we only observed methylation differences between
+diseased childs, which show the cerebral condition and diseased adults
+without that condition. One of the factors that could explain those
+differences in methylation is age.
+
+Thus, in order to adjust for age, the same analysis was repeated
+introducing the known biological age as a covariate in the linear model
+(m3) and no differences where observed.
+
+To further study if there is an age-accelerating effect on the disease
+we propose:
+
+1.  Genereate a [regression model with age-corrected ](signature.qmd#sec-residuals) beta values, to remove the effect of age from
+    the methylation values.
+2.  Look for specific age signature in our data by predicting [age-related sites within the controls](signature.qmd#sec-inhouseref) and checking for enrichment of those sites in the disease.
+3.  Analysing [previously reported age-related sites](signature.qmd#sec-PBMC) from literature.    
+4.  Reproducing [age-acceleration analysis](horvath.qmd) from existing literature.
+
