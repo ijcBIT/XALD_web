@@ -40,3 +40,4 @@ rsconnect/
 /.quarto/
 .cache
 XALD_web.Rproj
+_site

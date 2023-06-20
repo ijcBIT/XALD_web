@@ -29,22 +29,26 @@ source("R/functions.R")
 
 # Controls:
 # controls <- readRDS("data/controls.rds")
-ss_ctl <- readRDS("data/ss_ctl.rds")#data.table::data.table(as.data.frame(controls@colData))
-dmps <- readRDS("data/dmps.rds")
-full_mod <- readRDS("data/full_mod.rds")
-sig_mod <- full_mod[abs(full_mod$t)>2 & full_mod$p.value < 0.01 ,]
-probelist <- readRDS("data/probelist.rds")
-dtab <- readRDS("data/dtab.rds")
-pdata <- readRDS("data/ctl_pdata.rds")
-dt_path <- readRDS("dt_path_cgIn.rds")
-pathways_refsets <- readRDS("data/pathways_cgIn.rds")
+  ss_ctl <- readRDS("data/ss_ctl.rds")#data.table::data.table(as.data.frame(controls@colData))
+  dmps <- readRDS("data/dmps.rds")
+  full_mod <- readRDS("data/full_mod.rds")
+  sig_mod <- full_mod[abs(full_mod$t)>2 & full_mod$p.value < 0.01 ,]
+  probelist <- readRDS("data/probelist.rds")
+  dtab <- readRDS("data/dtab.rds")
+  pdata <- readRDS("data/ctl_pdata.rds")
+  dt_path <- readRDS("data/dt_path_cgIn.rds")
+  pathways_refsets <- readRDS("data/pathways_cgIn.rds")
 
 # Adults:
-ss_adults <- readRDS("data/ss_Adults.rds")
-DMPs<-readRDS("dmps_adults.rds")
-DMPs2 <- readRDS( "data/dmps_adults_cov.rds")
-per<-readRDS("data/per.rds")
-dtp <- readRDS("data/dtp.rds")
+  ss_adults <- readRDS("data/ss_Adults.rds")
+  DMPs<-readRDS("dmps_adults.rds")
+  DMPs2 <- readRDS( "data/dmps_adults_cov.rds")
+  per<-readRDS("data/per.rds")
+  pdata_adults <- readRDS("data/pdata_adults.rds")
+  dtp <- readRDS("data/dtp.rds")
+disease_dt_path <- readRDS("data/disease_dt_path.rds")
+
+
 ```
 
 
@@ -1085,9 +1089,9 @@ dtab2[, total := sapply(probelist,NROW)]
 dtab2[, model := "m2"]
 
 Dtab <- rbind(dtab,dtab2)
-per<-Dtab[,c( Common_probes, total,
+per <- Dtab[,c( Common_probes, total,
              lapply(.SD,function(x)paste0(x," (",round(x/as.numeric(Common_probes) *100,2),"%)"))
-),by=c("rn","model"),.SDcols=unique(DMPs$Contrast)]
+),by=c("rn","model"),.SDcols=cont]
 
 
 ```
@@ -1163,9 +1167,6 @@ betas_res <- lapply(names(models),function(model_name){
   dt_c
 })
 names(betas_res)<-names(models)
-
-
-names(betas_res)<-names(models)
 dtb_res <- rbindlist(betas_res)
 dtbm_res <- melt(dtb_res, value.name = "bVal",)
 dtbm_res <- dtbm_res[Condition!="Age"]
@@ -1177,6 +1178,18 @@ b2_res<-merge(b2_m,ss_adults[,.SD, .SDcols=c("Sample_Name", "Age","Condition")])
 b2_res$model="residuals"
 
 ```
+
+```{r}
+#| eval: false
+#| include: false
+setkey(dtbm_res,cg)
+lapply(names(probelist),function(n){
+  tab<-dtbm_res[probelist[n]  ,sort(mean(bVal)),by=c("Condition","model")]
+  })
+
+
+```
+
 
 ```{r betas covariate model}
 #| eval: false
@@ -1237,7 +1250,7 @@ saveRDS(pdata,"data/pdata_adults.rds")
 ```{r}
 #| eval: false
 #Beta Values for individual samples: 
-pdata_indiv<-rbind(b2_cov,b2_res)
+pdata_indiv<-rbind(b2_cov,b2_res) 
 saveRDS(pdata_indiv,"data/pdata_adults_indiv.rds")
 ```
 
@@ -1264,6 +1277,7 @@ table(dmp10$Contrast)
 
 ```{r}
 #| eval: false
+#| include: false
 setkey(pdata_indiv,cg)
 dt_ind_cov<-pdata_indiv[model=="covariate",]
 
@@ -1275,17 +1289,11 @@ saveRDS(dtp, "data/dtp.rds")
 
 
 ```{r top_probes_contrast, fig.height=72, dpi=200}
-#| eval: false
-#| include: false
 #| column: page
 #| layout-ncol: 1
 
 library(ggplot2)
 library(gridExtra)
-
-
- 
-
 
 dt_mean <- dtp[,list(b=mean(bVal),avage=mean(Age)),by=c("Condition","model","cg")]
 p_Contrasts<-ggplot(dtp, aes(x = Age, y = bVal, color=Condition, group=factor(model) )) +
@@ -1300,29 +1308,7 @@ p_Contrasts<-ggplot(dtp, aes(x = Age, y = bVal, color=Condition, group=factor(mo
 p_Contrasts
 
 
-# plts<-lapply(
-#   unique(topDMPs$probe),
-#   function(ProbeID){
-#     dt_mean <- dt_plot[ProbeID,list(b=mean(bVal),avage=mean(Age)),by=c("Condition","model")]
-#     
-#     print(ProbeID)
-#     p<-ggplot(dt_plot[ProbeID,], aes(x = Age, y = bVal, color=Condition, group=factor(model) )) +
-#     geom_point() +
-#     ylim(0, 1) +
-#     geom_point(data=dt_mean,aes(x=avage,y=b,col=Condition),size=4,shape=24)  +
-#     geom_smooth(aes(group=Condition),
-#               method = "lm", formula = y ~ x, se = F) +
-# 
-#     labs(title=paste0('Residual vs. Age for: ',ProbeID), x='Age', y='Residuals') + 
-#       facet_grid(vars(cg))
-#     
-#     return(p)
-#     
-#   })
-# sapply(plts,function(x)plot(x))
-# # p<-do.call("grid.arrange",c(plts, ncol=2))
-# # grid.arrange(grobs = plts, ncol = 2) ## display plot
-# plot(p)
+
 ```
 
 
@@ -1331,6 +1317,9 @@ p_Contrasts
 ```{r model covariate t.test}
 #| label: tbl-adult_z-test_cov_model
 #| tbl-cap: "Adult Disease vs Adult Controls methylation distributions significance test."
+
+library(data.table)
+pdata<-pdata_adults
 pdata_res<-pdata[model == "covariate",]
 zt<-list()
 pdata_res[,sd:=stats::sd(bVal),by=c("model","Condition")]
@@ -1390,6 +1379,8 @@ kableExtra::kbl(ztab)|>kableExtra::kable_classic_2()
 ```{r model residuals t.test}
 #| label: tbl-adult_z-test_residuals_model
 #| tbl-cap: "Adult Disease vs Adult Controls methylation distributions significance test."
+
+pdata<-pdata_adults
 pdata_res<-pdata[model == "residuals",]
 zt<-list()
 pdata_res[,sd:=stats::sd(bVal),by=c("model","Condition")]
@@ -1447,7 +1438,68 @@ kableExtra::kbl(ztab)|>kableExtra::kable_classic_2()
 ```
 
 
-We see there is a small difference in methylation for the dataset built with our controls and also for the dataset from literature.
+We see there is a small difference in methylation for the dataset cgSetm which combines data that comes from PBMC cells, although that seems to be specially true for the subset with no correlation with expression changes.
 For more information about the pathways associated with the set of methylated genes for each reference set take a look at @sec-inhouseref set 
+
+# Question 3: Age signature relataed to the disease
+
+```{r}
+#| eval: false
+library(data.table)
+library(IlluminaHumanMethylationEPICanno.ilm10b2.hg19)
+pdata[,diff:=bVal]
+# 2. Filter for significant probes and absolute mean difference of beta values > 0.05 
+dt_path<-dt_path[abs(diff)>0.05,.SD,.SDcols=c("ref","cg","type","diff")]
+
+# 3. add gene name information to our data.table
+data.table::setkey(dt_path,cg)
+dt_path$gene_name <- EPIC_anno[dt_path$cg,UCSC_RefGene_Name]
+```
+
+Select the top significant probes in our model. We will use limma's topTable function to get the top 500 most significant probes.
+
+```{r}
+#| eval: false
+
+# Top 500 DMPs:
+top5 <- as.data.table(limma::topTable(mod2_ext, number=500),keep.rownames = "cg")
+
+# Keep name of the contrast:
+N_contrasts <- length(colnames(mod2_ext$contrasts))
+names(top5)[(1:N_contrasts)+1] <- colnames(mod2_ext$contrasts)
+
+# Add gene annotation
+top5$gene_name <- EPIC_anno[top5$cg,UCSC_RefGene_Name]
+
+# Select columns and melt to generate a data.table with appropiate info and structure:
+disease_dt_path <- data.table::melt.data.table(top5[,.SD,.SDcols=c("cg",colnames(mod2_ext$contrasts),"gene_name")],id.vars = c("cg","gene_name"),value.name = "diff",variable.name = "Contrast")
+
+# Add type:
+disease_dt_path[, type:=ifelse(diff>0,"hyper","hypo")]
+disease_dt_path$ref = "top500_disease"
+```
+
+
+```{r}
+disease_dt_path <- disease_dt_path[abs(diff)>0.05,]
+setkey(disease_dt_path,"cg")
+pathways_desease <- get_pathway(probeIDs = disease_dt_path[Contrast == "AMN-cAMN",cg],dt=disease_dt_path)
+
+```
+
+## Pathways:
+
+### Hyper pathways:
+
+```{r}
+dtable(pathways_desease$hyper)
+```
+
+
+### Hypo pathways:
+
+```{r}
+dtable(pathways_desease$hypo)
+```
 
 

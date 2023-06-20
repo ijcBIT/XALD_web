@@ -7,8 +7,8 @@ website:
   page-navigation: true
   title: "XALD Methylation array analysis" 
   # author: "Izar de Villasante"
-  site-url: "https://ijcbit.github.io/XALD/" 
-  repo-url: https://github.com/ijcBIT/XALD 
+  site-url: "https://ijcbit.github.io/XALD_web/" 
+  repo-url: https://github.com/ijcBIT/XALD_web 
   repo-actions: [edit, issue]
   
   page-footer:
@@ -24,7 +24,7 @@ website:
         href: https://www.carrerasresearch.org/en/bioinformatics-unit_130420
         text: "IJC-BIT"
       - icon: github
-        href:  https://github.com/ijcBIT/XALD 
+        href:  https://github.com/ijcBIT/XALD_web 
         text: "XALD"
  
 
