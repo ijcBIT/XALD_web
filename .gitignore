@@ -41,3 +41,5 @@ rsconnect/
 .cache
 XALD_web.Rproj
 _site
+renv
+data/
