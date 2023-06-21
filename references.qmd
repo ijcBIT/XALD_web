@@ -1,5 +1,4 @@
----
-title: "References"
-author: "Izar de Villasante"
----
+# References {.unnumbered}
 
+::: {#refs}
+:::

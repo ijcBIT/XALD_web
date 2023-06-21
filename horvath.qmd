@@ -8,9 +8,19 @@ author: "Izar de Villasante"
 Many different approaches have been used to predict age from epigenetic marks. Possibly the most popular being the method proposed by Horvath et. al.
 [Epigenome-wide association study and epigenetic age acceleration associated with cigarette smoking among Costa Rican adults](https://www.nature.com/articles/s41598-022-08160-w)
 
-Calculation of epigenetic aging biomarkers
+
+::: {.callout-tip}
+## Calculation of epigenetic aging biomarkers
 
 Epigenetic age was calculated using five clocks: the Horvath Pan Tissue, Horvath Skin-Blood, Hannum Blood, PhenoAge, and GrimAge clocks. We calculated all epigenetic aging biomarkers utilizing the online Horvath calculator (http://dnamage.genetics.ucla.edu/) with the advanced analysis option. The outcome of interest was the “AgeAccelerationResidual” or residuals resulting from a linear regression model where each DNA methylation clock is regressed on chronological age of each participant. We refer to all acceleration measures as Epigenetic Age Acceleration (EAA) for the specific clock and defined the residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age as DNAmTL adjusted for age. A positive EAA indicates that the estimated epigenetic age is higher than the chronological age (increased biological aging) and a negative DNAmTL adjusted for age reflects a shorter telomere length. In addition, we tested Extrinsic EAA (EEAA) and Intrinsic EAA (IEAA) for Hannum’s and Horvath’s clocks, respectively51. The EEAA measure is associated with age-related changes in blood cell counts due to immune system aging and is calculated by upweighting the contributions of age-associated blood cell counts (naive cytotoxic T cells, exhausted cytotoxic T cells, and plasmablasts). The IEAA measure is independent of blood cell counts, represents intrinsic cellular aging, and is calculated by adding immune cell counts in addition to chronological age when calculating regression residuals. Analyses of epigenetic clocks included the 489 participants with high quality DNA methylation data.
+:::
+
+
+
+From the results of the Epigenetic Age Clockcalculator we are going to use the following:
+
+
+
 
 Data preparation:
 
@@ -42,6 +52,22 @@ Now this data is sent to the horvath calculator and these are the results:
 
 ```{r}
 clock <- data.table::fread("data/DNAmAgeCalcProject_2124_Results.csv")
+```
+
+- `DNAmAge` Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock.  Developed by Steve Horvath and trained on many different human cell types & tissues.
+- `DNAmPhenoAge` PhenoAge:	PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab.
+- `DNAmAgeHannum`:	Blood predictor of age, based on work by Hannum in Ideker lab 2013.
+
+- `DNAmAgeSkinBloodClock`	Horvath2, Skin & Blood Age:	Skin&BloodAge is trained on blood, saliva, buccal, and skin samples.  It is useful for in vitro studies and it is one of if not the most accurate age predictors available.
+- `IEAA`,	Intrinsic cellular age:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.
+
+
+
+
+```{r}
+cols <-c("DNAmAge", "DNAmAgeHannum", "DNAmPhenoAge", "DNAmAgeSkinBloodClock", "IEAA")
+
+clock[,.SD, .SDcols= c("SID",colnames(clock)[colnames(clock) %like% "DNAm"])]
 ```
 
 
