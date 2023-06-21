@@ -873,7 +873,7 @@ library(data.table)
 DMPs <- rbind(dmps, dmps_ext)
 
 DMPs<-DMPs[,UCSC_RefGene_Name:=sapply(UCSC_RefGene_Name,function(x) paste(unique(unlist(strsplit(x,";"))),collapse = ";"))]
-saveRDS(DMPs,"dmps_adults.rds")
+saveRDS(DMPs,"data/dmps_adults.rds")
 ```
 
 So there are `r NROW(DMPs)` DMPs.
@@ -949,7 +949,7 @@ saveRDS(dmps_ext,"data/dmps_mod2_ext.rds")
 
 The 2 dmp sets can be merged together into a single data.frame:
 
-```{r}
+```{r DMPs2}
 #| eval: false
 library(data.table)
 DMPs2 <- rbind(dmps, dmps_ext)
@@ -1291,7 +1291,7 @@ saveRDS(dtp, "data/dtp.rds")
 ```{r top_probes_contrast, fig.height=32, dpi=200}
 #| column: page
 #| layout-ncol: 3
-#| #| results: hide 
+#| results: hide 
 #| fig-keep: all
 
 library(ggplot2)
@@ -1307,16 +1307,13 @@ plt_list_DMP[[cont]]<-ggplot(dtp_c, aes(x = Age, y = bVal, color=Condition, grou
     geom_smooth(aes(group=Condition),
               method = "lm", formula = y ~ x, se = F) +
 
-    labs(title=paste0('Beta values vs. Age: ', cont, 'top 10 Differentially methylated sites.'), x='Age', y='Residuals') +
+    labs(title=paste0('Beta values vs. Age: ', cont, ' top 10 Differentially methylated sites.'), x='Age', y='Residuals') +
       facet_grid(cg ~ Contrast, margins = F)
 
 }
-lapply(plt_list_DMP,plot)
-
-
-
-
+plt_list_DMP
 ```
+
 
 
 #### Significance test:

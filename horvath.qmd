@@ -27,6 +27,8 @@ Data preparation:
 ```{r}
 library(data.table)
 ss_adults<-readRDS("data/ss_Adults.rds")
+ss_adults[,SID:=Sample_Name]
+ss_adults$Sample_Name<-NULL
 ```
 
 
@@ -54,22 +56,77 @@ Now this data is sent to the horvath calculator and these are the results:
 clock <- data.table::fread("data/DNAmAgeCalcProject_2124_Results.csv")
 ```
 
-- `DNAmAge` Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock.  Developed by Steve Horvath and trained on many different human cell types & tissues.
-- `DNAmPhenoAge` PhenoAge:	PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab.
-- `DNAmAgeHannum`:	Blood predictor of age, based on work by Hannum in Ideker lab 2013.
+- `DNAmAge` Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock.  Developed by Steve Horvath and trained on many different human cell types & tissues. @Horvath2013 
+- `DNAmPhenoAge` PhenoAge:	PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab. @Levin2018
+- `DNAmAgeHannum`:	Blood predictor of age, based on work by Hannum in Ideker lab 2013. @Hannum2013
 
-- `DNAmAgeSkinBloodClock`	Horvath2, Skin & Blood Age:	Skin&BloodAge is trained on blood, saliva, buccal, and skin samples.  It is useful for in vitro studies and it is one of if not the most accurate age predictors available.
-- `IEAA`,	Intrinsic cellular age:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.
+- `DNAmAgeSkinBloodClock`	Horvath2, Skin & Blood Age:	Skin&BloodAge is trained on blood, saliva, buccal, and skin samples.  It is useful for in vitro studies and it is one of if not the most accurate age predictors available.@Horvath2018
+- `IEAA`,	Intrinsic cellular age Horvath:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016
+- `IEAA.Hannum` Intrinsic cellular age Hannum:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016
+- `DNAmGrimAge2BasedOnPredictedAge` Grim2 predicted age: Follow-on version of GrimAge mortality predictor when imputing age with Skin&BloodAge clock.  Developed by Ake Lu and Steve Horvath.@Lu2022
+
+- `DNAmGrimAge2BasedOnRealAge` Grim2 real age: Follow-on version of GrimAge which is considered the best mortality predictor available.  Developed by Ake Lu and Steve Horvath.@Lu2022
+
+
 
 
 
 
 ```{r}
-cols <-c("DNAmAge", "DNAmAgeHannum", "DNAmPhenoAge", "DNAmAgeSkinBloodClock", "IEAA")
-
-clock[,.SD, .SDcols= c("SID",colnames(clock)[colnames(clock) %like% "DNAm"])]
+cols <-c("DNAmAge", "DNAmAgeHannum", "DNAmPhenoAge", "DNAmAgeSkinBloodClock", "DNAmGrimAge2BasedOnPredictedAge", "DNAmGrimAge2BasedOnRealAge"
+)
+cols_acc <- c("IEAA", "IEAA.Hannum")
+dtage <- cbind(clock[,.SD,.SDcols=c("SID",cols_acc)],clock[,lapply(.SD,function(x) x-Age),.SDcols=c(cols)])
+merge(dtage,ss_adults[,.SD,.SDcols=c("SID","Condition")], by=c("SID"))->dt
+dt_long <- melt(dt,id.vars = c("SID","Condition"))
 ```
 
 
+```{r}
+p1<-ggplot(dt_long[variable %in% cols_acc,], aes(x=variable, y=value, fill= variable)) +
+     geom_boxplot(aes(fill=variable),outlier.fill="ivory",alpha = 0.5) +
+      # scale_fill_manual(ys=levels(col_subclass)) +
+      # geom_jitter(#color=pdata$color,
+      #             size=0.1,show.legend = TRUE,
+      #             alpha=0.2) +
 
-<!-- ############### -->
+      #theme_ipsum() +
+      theme(
+        legend.position="left",
+        plot.title = element_text(size=11)
+      ) +
+      ggtitle("Intrinsic celluar age") +
+      xlab("method")+
+    ylab("Predicted age - real age")+
+            scale_x_discrete(guide = guide_axis(angle = 60))+
+    
+    facet_wrap(as.formula(paste("~ Condition" )),ncol = 2)
+p1
+
+
+
+```
+```{r}
+require(backports)
+p2<-ggplot(dt_long[!variable %in% cols_acc,], aes(x=variable, y=value, fill= variable)) +
+     geom_boxplot(aes(fill=variable),outlier.fill="ivory",alpha = 0.5) +
+      # scale_fill_manual(ys=levels(col_subclass)) +
+      # geom_jitter(#color=pdata$color,
+      #             size=0.1,show.legend = TRUE,
+      #             alpha=0.2) +
+
+      #theme_ipsum() +
+      theme(
+        legend.position="left",
+        plot.title = element_text(size=11)
+      ) +
+      ggtitle("Difference between chronological age and predicted biological age") +
+      xlab("method")+
+    ylab("Predicted age - real age")+
+            scale_x_discrete(guide = guide_axis(angle = 60))+
+    
+    facet_wrap(as.formula(paste("~ Condition" )),ncol = 2)
+p2
+
+```
+
