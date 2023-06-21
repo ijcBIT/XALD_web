@@ -190,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/ijcBIT/XALD_web/edit/main/horvath.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/ijcBIT/XALD_web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -215,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="context" class="level1">
+<section id="context" class="level1 page-columns page-full">
 <h1>Context</h1>
 <p>Many different approaches have been used to predict age from epigenetic marks. Possibly the most popular being the method proposed by Horvath et. al. <a href="https://www.nature.com/articles/s41598-022-08160-w">Epigenome-wide association study and epigenetic age acceleration associated with cigarette smoking among Costa Rican adults</a></p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -276,7 +276,7 @@ Calculation of epigenetic aging biomarkers
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(dtage,ss_adults[,.SD,<span class="at">.SDcols=</span><span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>)], <span class="at">by=</span><span class="fu">c</span>(<span class="st">"SID"</span>))<span class="ot">-&gt;</span>dt</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>dt_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(dt,<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
+<div class="cell page-columns page-full" data-fig.format="svg">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span><span class="fu">ggplot</span>(dt_long[variable <span class="sc">%in%</span> cols_acc,], <span class="fu">aes</span>(<span class="at">x=</span>variable, <span class="at">y=</span>value, <span class="at">fill=</span> variable)) <span class="sc">+</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill=</span>variable),<span class="at">outlier.fill=</span><span class="st">"ivory"</span>,<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
@@ -297,11 +297,12 @@ Calculation of epigenetic aging biomarkers
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"~ Condition"</span> )),<span class="at">ncol =</span> <span class="dv">2</span>)</span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="horvath_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<div class="cell-output-display column-page">
+<p><img src="horvath_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" style="width:100.0%"></p>
 </div>
 </div>
-<div class="cell">
+<p>These results seem to confirm our previous findings. There is no acceleration in aging for the X- Ald group without cerebral condition, but there is some acceleration for the other group</p>
+<div class="cell page-columns page-full" data-fig.format="svg">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(backports)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: backports</code></pre>
@@ -325,9 +326,27 @@ Calculation of epigenetic aging biomarkers
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"~ Condition"</span> )),<span class="at">ncol =</span> <span class="dv">2</span>)</span>
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="horvath_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<div class="cell-output-display column-page">
+<p><img src="horvath_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" style="width:100.0%"></p>
 </div>
+</div>
+<p>There are some that predict more and some that predic less. We need to check on our controls.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ss_all<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/SS.rds"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Female<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Tissue<span class="ot">=</span><span class="st">"Blood PBMC"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ss_all[,SampleID<span class="sc">:</span><span class="er">=</span>Sample_Name]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Sample_Name<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="ot">&lt;-</span>ss_all[<span class="sc">!</span>SampleID <span class="sc">%in%</span> ss_adults<span class="sc">$</span>SID,]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(ss_horvath,<span class="st">"SampleID"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>betas<span class="ot">&lt;-</span>minfi<span class="sc">::</span><span class="fu">getBeta</span>(<span class="fu">readRDS</span>(<span class="st">"data/controls.rds"</span>))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>b<span class="ot">&lt;-</span>data.table<span class="sc">::</span><span class="fu">as.data.table</span>(betas,<span class="at">keep.rownames =</span> T)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>b[,ProbeID<span class="sc">:</span><span class="er">=</span>rn]</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>b<span class="sc">$</span>rn<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(b,<span class="fu">c</span>(<span class="st">"ProbeID"</span>,ss_horvath<span class="sc">$</span>SampleID))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(b,<span class="st">"data/controls_betas.csv"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(ss_horvath,<span class="st">"data/ss_controls.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
