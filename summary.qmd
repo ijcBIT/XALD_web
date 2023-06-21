@@ -5,17 +5,17 @@ author: "Izar de Villasante"
 
 # Summary
 
-In summary, in this project we tryed to answer the following questions:
+In this project we tried to answer the following questions:
 
-1. Is there an age-accelerating factor for XALD patients according to the changes in methylation?
+1. Is there an age-accelerating factor for XALD patients according to the changes in DNA methylation?
 
-2. Which is the methylation mark associated with XALD disease?
+2. Which are the changes in DNA methylation associated with XALD disease?
 
-In order to give an answer we started by trying the [conventional analysis]() following the standard workflow including preprocessing, data filtering, DMPs & DMRs identification and finally pathway analysis. We tried different combinations of cutoff values and thresholds for each step and we also tried adding more controls from external sources. 
+To start with, we performed a [conventional analysis]() following our standard workflow for differential methylation analysis ( data preprocessing, filtering, identification of differentially methylated Probes,DMPs, and Regions, DMRs, and pathway analysis of the associated genes) using different sets of parameters (pvalu, FDR, min. methylation difference). Due to the imbalanced study design with a much smaller group of control vs disease cases and we repeated the same analysis including control cases from public datasets (GEO). 
 
-1. Conventional analysis using BIT pipline.
+1. Conventional analysis using standard pipline.
 
-2. Conventional approach + external controls from GEO.
+2. Conventional analysis including controls from GEO.
 
 From this first approach we could identify some [enriched pathways](standard.qmd#sec-pathway) with genes associated with DMPs (individual probes). Nevertheless, by adding age to the model as a covariate this differences where lost.  
 
