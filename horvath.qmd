@@ -3,4 +3,47 @@ title: "Methylation:  Epigenetic clock"
 author: "Izar de Villasante"
 ---
 
-something horvath
+# Context
+
+Many different approaches have been used to predict age from epigenetic marks. Possibly the most popular being the method proposed by Horvath et. al.
+[Epigenome-wide association study and epigenetic age acceleration associated with cigarette smoking among Costa Rican adults](https://www.nature.com/articles/s41598-022-08160-w)
+
+Calculation of epigenetic aging biomarkers
+
+Epigenetic age was calculated using five clocks: the Horvath Pan Tissue, Horvath Skin-Blood, Hannum Blood, PhenoAge, and GrimAge clocks. We calculated all epigenetic aging biomarkers utilizing the online Horvath calculator (http://dnamage.genetics.ucla.edu/) with the advanced analysis option. The outcome of interest was the “AgeAccelerationResidual” or residuals resulting from a linear regression model where each DNA methylation clock is regressed on chronological age of each participant. We refer to all acceleration measures as Epigenetic Age Acceleration (EAA) for the specific clock and defined the residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age as DNAmTL adjusted for age. A positive EAA indicates that the estimated epigenetic age is higher than the chronological age (increased biological aging) and a negative DNAmTL adjusted for age reflects a shorter telomere length. In addition, we tested Extrinsic EAA (EEAA) and Intrinsic EAA (IEAA) for Hannum’s and Horvath’s clocks, respectively51. The EEAA measure is associated with age-related changes in blood cell counts due to immune system aging and is calculated by upweighting the contributions of age-associated blood cell counts (naive cytotoxic T cells, exhausted cytotoxic T cells, and plasmablasts). The IEAA measure is independent of blood cell counts, represents intrinsic cellular aging, and is calculated by adding immune cell counts in addition to chronological age when calculating regression residuals. Analyses of epigenetic clocks included the 489 participants with high quality DNA methylation data.
+
+Data preparation:
+
+```{r}
+library(data.table)
+ss_adults<-readRDS("data/ss_Adults.rds")
+```
+
+
+```{r}
+#| eval: false
+
+source("R/functions.R")
+ss_horvath<-ss_adults
+ss_horvath$Female=0
+ss_horvath$Tissue="Blood PBMC"
+ss_horvath[,SampleID:=Sample_Name]
+ss_horvath$Sample_Name<-NULL
+data.table::setcolorder(ss_horvath,"SampleID")
+b<-data.table::as.data.table(betas,keep.rownames = T)
+b[,ProbeID:=rn]
+b$rn<-NULL
+data.table::setcolorder(b,c("ProbeID",ss_horvath$SampleID))
+data.table::fwrite(b,"data/adult_betas.csv")
+data.table::fwrite(ss_horvath,"data/ss_adults.csv")
+```
+
+Now this data is sent to the horvath calculator and these are the results:
+
+```{r}
+clock <- data.table::fread("data/DNAmAgeCalcProject_2124_Results.csv")
+```
+
+
+
+<!-- ############### -->
