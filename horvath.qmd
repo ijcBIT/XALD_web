@@ -83,6 +83,7 @@ dt_long <- melt(dt,id.vars = c("SID","Condition"))
 
 
 ```{r}
+library(ggplot2)
 p1<-ggplot(dt_long[variable %in% cols_acc,], aes(x=variable, y=value, fill= variable)) +
      geom_boxplot(aes(fill=variable),outlier.fill="ivory",alpha = 0.5) +
       # scale_fill_manual(ys=levels(col_subclass)) +
