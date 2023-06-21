@@ -41,7 +41,7 @@ source("R/functions.R")
 
 # Adults:
   ss_adults <- readRDS("data/ss_Adults.rds")
-  DMPs<-readRDS("dmps_adults.rds")
+  DMPs<-readRDS("data/dmps_adults.rds")
   DMPs2 <- readRDS( "data/dmps_adults_cov.rds")
   per<-readRDS("data/per.rds")
   pdata_adults <- readRDS("data/pdata_adults.rds")
