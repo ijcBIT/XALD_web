@@ -1288,24 +1288,31 @@ saveRDS(dtp, "data/dtp.rds")
 ```
 
 
-```{r top_probes_contrast, fig.height=72, dpi=200}
+```{r top_probes_contrast, fig.height=32, dpi=200}
 #| column: page
-#| layout-ncol: 1
+#| layout-ncol: 3
+#| #| results: hide 
+#| fig-keep: all
 
 library(ggplot2)
 library(gridExtra)
-
-dt_mean <- dtp[,list(b=mean(bVal),avage=mean(Age)),by=c("Condition","model","cg")]
-p_Contrasts<-ggplot(dtp, aes(x = Age, y = bVal, color=Condition, group=factor(model) )) +
+plt_list_DMP <- list()
+for (cont in unique(dtp$Contrast)){
+  dtp_c <- dtp[Contrast == cont,]
+  dt_mean <- dtp_c[,list(b=mean(bVal),avage=mean(Age)),by=c("Condition","model","cg")]
+plt_list_DMP[[cont]]<-ggplot(dtp_c, aes(x = Age, y = bVal, color=Condition, group=factor(model) )) +
     geom_point() +
-    ylim(0, 1) +
+    # ylim(0, 1) +
     geom_point(data=dt_mean,aes(x=avage,y=b,col=Condition),size=4,shape=24)  +
     geom_smooth(aes(group=Condition),
               method = "lm", formula = y ~ x, se = F) +
 
-    labs(title=paste0('Beta values vs. Age: top 10 sites by Contrast '), x='Age', y='Residuals') +
+    labs(title=paste0('Beta values vs. Age: ', cont, 'top 10 Differentially methylated sites.'), x='Age', y='Residuals') +
       facet_grid(cg ~ Contrast, margins = F)
-p_Contrasts
+
+}
+lapply(plt_list_DMP,plot)
+
 
 
 
