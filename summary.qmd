@@ -11,7 +11,7 @@ In this project we tried to answer the following questions:
 
 2. Which are the changes in DNA methylation associated with XALD disease?
 
-To start with, we performed a [conventional analysis]() following our standard workflow for differential methylation analysis ( data preprocessing, filtering, identification of differentially methylated Probes,DMPs, and Regions, DMRs, and pathway analysis of the associated genes) using different sets of parameters (pvalu, FDR, min. methylation difference). Due to the imbalanced study design with a much smaller group of control vs disease cases and we repeated the same analysis including control cases from public datasets (GEO). 
+To start with, we performed a [conventional analysis]() following our standard workflow for differential methylation analysis ( data preprocessing, filtering, identification of differentially methylated Probes,DMPs, and Regions, DMRs, and pathway analysis of the associated genes) using different sets of parameters (pvalu, FDR, min. methylation difference). Due to the imbalanced study design with a much smaller group of control vs disease cases and we repeated the same analysis including additional control cases from public datasets (GEO). 
 
 1. Conventional analysis using standard pipline.
 
