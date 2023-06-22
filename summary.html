@@ -55,7 +55,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -236,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Since the results from this conventional analysis where not satisfying we then tryed some other analysis replicating existing literature on DNA methylation associated with age:</p>
 <ol start="3" type="1">
-<li>Checking for age-related signatures following the workflow described in <span class="citation" data-cites="Steegenga2014">@Steegenga2014</span></li>
+<li>Checking for age-related signatures following the workflow described in <span class="citation" data-cites="Steegenga2014">Steegenga et al. (<a href="#ref-Steegenga2014" role="doc-biblioref">2014</a>)</span></li>
 </ol>
 <p>Here we saw some differences in methylation for our data for the set related with no change in gene expression.</p>
 <div>
@@ -301,7 +320,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p><del>4. Checking age acceleration as decribed by <span class="citation" data-cites="Horvath2013">@Horvath2013</span></del></p>
+<p><del>4. Checking age acceleration as decribed by <span class="citation" data-cites="Horvath2013">Horvath (<a href="#ref-Horvath2013" role="doc-biblioref">2013</a>)</span></del></p>
 <p>We identified a particular set of age-related genes that were differentially methylated for the XALD + cerebral condition in adult patients for specific sites that had been previously reported to be related with age.</p>
 <p>See <strong>?@tbl-adult_z-test_cov_model</strong></p>
 <ol start="2" type="1">
@@ -309,9 +328,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Horvath2013" class="csl-entry" role="listitem">
+Horvath, Steve. 2013. <span>“DNA Methylation Age of Human Tissues and Cell Types.”</span> <em>Genome Biology</em> 14: R115. <a href="https://doi.org/10.1186/gb-2013-14-10-r115">https://doi.org/10.1186/gb-2013-14-10-r115</a>.
+</div>
+<div id="ref-Steegenga2014" class="csl-entry" role="listitem">
+Steegenga, Wilma T., Mark V. Boekschoten, Carolien Lute, Guido J. Hooiveld, Philip J. De Groot, Tiffany J. Morris, Andrew E. Teschendorff, Lee M. Butcher, Stephan Beck, and Michael Müller. 2014. <span>“Genome-Wide Age-Related Changes in DNA Methylation and Gene Expression in Human PBMCs.”</span> <em>Age</em> 36: 1523–40. <a href="https://doi.org/10.1007/S11357-014-9648-X">https://doi.org/10.1007/S11357-014-9648-X</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
