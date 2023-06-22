@@ -296,12 +296,17 @@ Calculation of epigenetic aging biomarkers
 </ul>
 <p>Data preparation:</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ss_adults<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/ss_Adults.rds"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ss_adults[,SID<span class="sc">:</span><span class="er">=</span>Sample_Name]</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ss_adults<span class="sc">$</span>Sample_Name<span class="ot">&lt;-</span><span class="cn">NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ss_all<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/SS.rds"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Female<span class="ot">=</span><span class="dv">0</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Tissue<span class="ot">=</span><span class="st">"Blood PBMC"</span></span>
@@ -318,8 +323,11 @@ Calculation of epigenetic aging biomarkers
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(b,<span class="fu">c</span>(<span class="st">"ProbeID"</span>,ss_horvath<span class="sc">$</span>SampleID))</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(b,<span class="st">"data/controls_betas.csv"</span>)</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(ss_horvath,<span class="st">"data/ss_controls.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/functions.R"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="ot">&lt;-</span>ss_adults</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="sc">$</span>Female<span class="ot">=</span><span class="dv">0</span></span>
@@ -333,16 +341,23 @@ Calculation of epigenetic aging biomarkers
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(b,<span class="fu">c</span>(<span class="st">"ProbeID"</span>,ss_horvath<span class="sc">$</span>SampleID))</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(b,<span class="st">"data/adult_betas.csv"</span>)</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(ss_horvath,<span class="st">"data/ss_adults.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>Now this data is sent to the horvath calculator and these are the results:</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>clock_adults <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="st">"data/DNAmAgeCalcProject_2124_Results.csv"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>clock_ctl <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="st">"data/DNAmAgeCalcProject_2638_Results.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>acc<span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">names</span>(clock_ctl)[<span class="fu">names</span>(clock_ctl)<span class="sc">%like%</span><span class="st">"AgeAccel"</span>],<span class="fu">c</span>(<span class="st">"IEAA"</span>, <span class="st">"IEAA.Hannum"</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"SID"</span>,acc,<span class="st">"DNAmTLAdjAge"</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>cols</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "SID"                           "AgeAccelerationResidualHannum"
 [3] "AgeAccelGrim"                  "AgeAccelPheno"                
@@ -351,7 +366,10 @@ Calculation of epigenetic aging biomarkers
 </div>
 </div>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>clock<span class="ot">&lt;-</span><span class="fu">rbind</span>(clock_adults[,.SD,<span class="at">.SDcols=</span>cols],clock_adults[,.SD,<span class="at">.SDcols=</span>cols])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <!-- - `DNAmAge` Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock.  Developed by Steve Horvath and trained on many different human cell types & tissues. @Horvath2013  -->
 <!-- - `DNAmPhenoAge` PhenoAge: PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab. @Levin2018 -->
@@ -370,14 +388,19 @@ Calculation of epigenetic aging biomarkers
 <!-- dt_long <- melt(dt,id.vars = c("SID","Condition")) -->
 <!-- ``` -->
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ss_all<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/SS.rds"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ss_all[,SID<span class="sc">:</span><span class="er">=</span><span class="fu">make.names</span>(Sample_Name)]</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">intersect</span>(clock<span class="sc">$</span>SID,ss_all<span class="sc">$</span>SID)</span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(clock,ss_all[,.SD,<span class="at">.SDcols=</span><span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>)], <span class="at">by=</span><span class="fu">c</span>(<span class="st">"SID"</span>))<span class="ot">-&gt;</span>dt</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>dt_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(dt,<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <div class="cell page-columns page-full" data-fig.format="svg">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span><span class="fu">ggplot</span>(dt_long, <span class="fu">aes</span>(<span class="at">x=</span>Condition, <span class="at">y=</span>value, <span class="at">fill=</span> Condition)) <span class="sc">+</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill=</span>Condition),<span class="at">outlier.fill=</span><span class="st">"ivory"</span>,<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
@@ -398,6 +421,7 @@ Calculation of epigenetic aging biomarkers
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"~ variable"</span> )),<span class="at">ncol =</span> <span class="dv">3</span>,<span class="at">scales=</span><span class="st">"free"</span>)</span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display column-page">
 <p><img src="horvath_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" style="width:100.0%"></p>
 </div>
