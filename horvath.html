@@ -186,6 +186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#context" id="toc-context" class="nav-link active" data-scroll-target="#context">Context</a></li>
+  <li><a href="#epigenetic-age-acceleration-eaa" id="toc-epigenetic-age-acceleration-eaa" class="nav-link" data-scroll-target="#epigenetic-age-acceleration-eaa">Epigenetic Age Acceleration (EAA):</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/ijcBIT/XALD_web/edit/main/horvath.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/ijcBIT/XALD_web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -215,7 +216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="context" class="level1 page-columns page-full">
+<section id="context" class="level1">
 <h1>Context</h1>
 <p>Many different approaches have been used to predict age from epigenetic marks. Possibly the most popular being the method proposed by Horvath et. al. <a href="https://www.nature.com/articles/s41598-022-08160-w">Epigenome-wide association study and epigenetic age acceleration associated with cigarette smoking among Costa Rican adults</a></p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -228,10 +229,52 @@ Calculation of epigenetic aging biomarkers
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Epigenetic age was calculated using five clocks: the Horvath Pan Tissue, Horvath Skin-Blood, Hannum Blood, PhenoAge, and GrimAge clocks. We calculated all epigenetic aging biomarkers utilizing the online Horvath calculator (http://dnamage.genetics.ucla.edu/) with the advanced analysis option. The outcome of interest was the “AgeAccelerationResidual” or residuals resulting from a linear regression model where each DNA methylation clock is regressed on chronological age of each participant. We refer to all acceleration measures as Epigenetic Age Acceleration (EAA) for the specific clock and defined the residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age as DNAmTL adjusted for age. A positive EAA indicates that the estimated epigenetic age is higher than the chronological age (increased biological aging) and a negative DNAmTL adjusted for age reflects a shorter telomere length. In addition, we tested Extrinsic EAA (EEAA) and Intrinsic EAA (IEAA) for Hannum’s and Horvath’s clocks, respectively51. The EEAA measure is associated with age-related changes in blood cell counts due to immune system aging and is calculated by upweighting the contributions of age-associated blood cell counts (naive cytotoxic T cells, exhausted cytotoxic T cells, and plasmablasts). The IEAA measure is independent of blood cell counts, represents intrinsic cellular aging, and is calculated by adding immune cell counts in addition to chronological age when calculating regression residuals. Analyses of epigenetic clocks included the 489 participants with high quality DNA methylation data.</p>
+<p>We calculated all epigenetic aging biomarkers utilizing the online Horvath calculator (http://dnamage.genetics.ucla.edu/) with the advanced analysis option. The outcome of interest was the <em>“AgeAccelerationResidual”</em> or residuals resulting from a linear regression model where each DNA methylation clock is regressed on chronological age of each participant. We refer to all acceleration measures as Epigenetic Age Acceleration (EAA) for the specific clock and defined the residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age as DNAmTL adjusted for age. A positive EAA indicates that the estimated epigenetic age is higher than the chronological age (increased biological aging) and a negative DNAmTL adjusted for age reflects a shorter telomere length. In addition, we tested Extrinsic EAA (EEAA) and Intrinsic EAA (IEAA) for Hannum’s and Horvath’s clocks, respectively51. The EEAA measure is associated with age-related changes in blood cell counts due to immune system aging and is calculated by upweighting the contributions of age-associated blood cell counts (naive cytotoxic T cells, exhausted cytotoxic T cells, and plasmablasts). The IEAA measure is independent of blood cell counts, represents intrinsic cellular aging, and is calculated by adding immune cell counts in addition to chronological age when calculating regression residuals. Analyses of epigenetic clocks included the 489 participants with high quality DNA methylation data.</p>
 </div>
 </div>
-<p>From the results of the Epigenetic Age Clockcalculator we are going to use the following:</p>
+</section>
+<section id="epigenetic-age-acceleration-eaa" class="level1 page-columns page-full">
+<h1>Epigenetic Age Acceleration (EAA):</h1>
+<p>From the results of the Epigenetic Age Clock calculator we are going to use the following:</p>
+<ol type="1">
+<li><code>AgeAccelerationResidualHannum</code> <span class="citation" data-cites="Hannum2013">@Hannum2013</span>:</li>
+</ol>
+<ul>
+<li>The predicted age has been calculated using blood samples, based on work by Hannum in Ideker lab 2013.</li>
+</ul>
+<ol start="2" type="1">
+<li><code>AgeAccelGrim</code><span class="citation" data-cites="Lu2019">@Lu2019</span>:</li>
+</ol>
+<ul>
+<li>GrimAge is considered the best mortality predictor available. Developed by Ake Lu and Steve Horvath.</li>
+<li>based on seven DNA methilation estimators of plasma proteins and a DNA methylation estimator of smoking pack-years</li>
+</ul>
+<ol start="3" type="1">
+<li><code>AgeAccelPheno</code> <span class="citation" data-cites="Levin2018">@Levin2018</span>:</li>
+</ol>
+<ul>
+<li>PhenoAge morbidity &amp; mortality predictor, developed by Morgan Levine in Steve Horvath’s lab.</li>
+<li>This biomarker was developed using data from whole blood, it correlates strongly with age in every tissue and cell tested.</li>
+</ul>
+<ol start="4" type="1">
+<li><code>IEAA</code> <span class="citation" data-cites="Chen2016">@Chen2016</span> <span class="citation" data-cites="Horvath2013">@Horvath2013</span>:<br>
+</li>
+</ol>
+<ul>
+<li>Intrinsic cellular age Horvath: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.</li>
+</ul>
+<ol start="5" type="1">
+<li><code>IEAA.Hannum</code><span class="citation" data-cites="Chen2016">@Chen2016</span> <span class="citation" data-cites="Hannum2013">@Hannum2013</span></li>
+</ol>
+<ul>
+<li>Intrinsic cellular age Hannum: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.</li>
+</ul>
+<ol start="6" type="1">
+<li><code>DNAmTLAdjAge</code> <span class="citation" data-cites="Lu2019tl">@Lu2019tl</span>:</li>
+</ol>
+<ul>
+<li>The residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age.</li>
+</ul>
 <p>Data preparation:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
@@ -240,114 +283,107 @@ Calculation of epigenetic aging biomarkers
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ss_adults<span class="sc">$</span>Sample_Name<span class="ot">&lt;-</span><span class="cn">NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/functions.R"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="ot">&lt;-</span>ss_adults</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="sc">$</span>Female<span class="ot">=</span><span class="dv">0</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="sc">$</span>Tissue<span class="ot">=</span><span class="st">"Blood PBMC"</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ss_horvath[,SampleID<span class="sc">:</span><span class="er">=</span>Sample_Name]</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="sc">$</span>Sample_Name<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(ss_horvath,<span class="st">"SampleID"</span>)</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>b<span class="ot">&lt;-</span>data.table<span class="sc">::</span><span class="fu">as.data.table</span>(betas,<span class="at">keep.rownames =</span> T)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>b[,ProbeID<span class="sc">:</span><span class="er">=</span>rn]</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>b<span class="sc">$</span>rn<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(b,<span class="fu">c</span>(<span class="st">"ProbeID"</span>,ss_horvath<span class="sc">$</span>SampleID))</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(b,<span class="st">"data/adult_betas.csv"</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(ss_horvath,<span class="st">"data/ss_adults.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ss_all<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/SS.rds"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Female<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Tissue<span class="ot">=</span><span class="st">"Blood PBMC"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ss_all[,SampleID<span class="sc">:</span><span class="er">=</span>Sample_Name]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Sample_Name<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(ss_all,<span class="st">"SampleID"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>betas<span class="ot">&lt;-</span>minfi<span class="sc">::</span><span class="fu">getBeta</span>(<span class="fu">readRDS</span>(<span class="st">"data/controls.rds"</span>))</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>b<span class="ot">&lt;-</span>data.table<span class="sc">::</span><span class="fu">as.data.table</span>(betas,<span class="at">keep.rownames =</span> T)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>b[,ProbeID<span class="sc">:</span><span class="er">=</span>rn]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>b<span class="sc">$</span>rn<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>ss_horvath <span class="ot">&lt;-</span> ss_all[SampleID <span class="sc">%in%</span> <span class="fu">intersect</span>(<span class="fu">colnames</span>(b),ss_all<span class="sc">$</span>SampleID),]</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>b<span class="ot">&lt;-</span>b[,.SD,.SDcols<span class="ot">=</span><span class="fu">c</span>(<span class="st">"ProbeID"</span>,<span class="fu">intersect</span>(<span class="fu">colnames</span>(b),ss_all<span class="sc">$</span>SampleID))]</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(b,<span class="fu">c</span>(<span class="st">"ProbeID"</span>,ss_horvath<span class="sc">$</span>SampleID))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(b,<span class="st">"data/controls_betas.csv"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(ss_horvath,<span class="st">"data/ss_controls.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/functions.R"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="ot">&lt;-</span>ss_adults</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="sc">$</span>Female<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="sc">$</span>Tissue<span class="ot">=</span><span class="st">"Blood PBMC"</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>ss_horvath[,SampleID<span class="sc">:</span><span class="er">=</span>Sample_Name]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="sc">$</span>Sample_Name<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(ss_horvath,<span class="st">"SampleID"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>b<span class="ot">&lt;-</span>data.table<span class="sc">::</span><span class="fu">as.data.table</span>(betas,<span class="at">keep.rownames =</span> T)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>b[,ProbeID<span class="sc">:</span><span class="er">=</span>rn]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>b<span class="sc">$</span>rn<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(b,<span class="fu">c</span>(<span class="st">"ProbeID"</span>,ss_horvath<span class="sc">$</span>SampleID))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(b,<span class="st">"data/adult_betas.csv"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(ss_horvath,<span class="st">"data/ss_adults.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now this data is sent to the horvath calculator and these are the results:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>clock <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="st">"data/DNAmAgeCalcProject_2124_Results.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>clock_adults <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="st">"data/DNAmAgeCalcProject_2124_Results.csv"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>clock_ctl <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="st">"data/DNAmAgeCalcProject_2638_Results.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<ul>
-<li><p><code>DNAmAge</code> Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock. Developed by Steve Horvath and trained on many different human cell types &amp; tissues. <span class="citation" data-cites="Horvath2013">@Horvath2013</span></p></li>
-<li><p><code>DNAmPhenoAge</code> PhenoAge: PhenoAge morbidity &amp; mortality predictor, developed by Morgan Levine in Steve Horvath’s lab. <span class="citation" data-cites="Levin2018">@Levin2018</span></p></li>
-<li><p><code>DNAmAgeHannum</code>: Blood predictor of age, based on work by Hannum in Ideker lab 2013. <span class="citation" data-cites="Hannum2013">@Hannum2013</span></p></li>
-<li><p><code>DNAmAgeSkinBloodClock</code> Horvath2, Skin &amp; Blood Age: Skin&amp;BloodAge is trained on blood, saliva, buccal, and skin samples. It is useful for in vitro studies and it is one of if not the most accurate age predictors available.@Horvath2018</p></li>
-<li><p><code>IEAA</code>, Intrinsic cellular age Horvath: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016</p></li>
-<li><p><code>IEAA.Hannum</code> Intrinsic cellular age Hannum: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016</p></li>
-<li><p><code>DNAmGrimAge2BasedOnPredictedAge</code> Grim2 predicted age: Follow-on version of GrimAge mortality predictor when imputing age with Skin&amp;BloodAge clock. Developed by Ake Lu and Steve Horvath.@Lu2022</p></li>
-<li><p><code>DNAmGrimAge2BasedOnRealAge</code> Grim2 real age: Follow-on version of GrimAge which is considered the best mortality predictor available. Developed by Ake Lu and Steve Horvath.@Lu2022</p></li>
-</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"DNAmAge"</span>, <span class="st">"DNAmAgeHannum"</span>, <span class="st">"DNAmPhenoAge"</span>, <span class="st">"DNAmAgeSkinBloodClock"</span>, <span class="st">"DNAmGrimAge2BasedOnPredictedAge"</span>, <span class="st">"DNAmGrimAge2BasedOnRealAge"</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cols_acc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"IEAA"</span>, <span class="st">"IEAA.Hannum"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>dtage <span class="ot">&lt;-</span> <span class="fu">cbind</span>(clock[,.SD,<span class="at">.SDcols=</span><span class="fu">c</span>(<span class="st">"SID"</span>,cols_acc)],clock[,<span class="fu">lapply</span>(.SD,<span class="cf">function</span>(x) x<span class="sc">-</span>Age),<span class="at">.SDcols=</span><span class="fu">c</span>(cols)])</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(dtage,ss_adults[,.SD,<span class="at">.SDcols=</span><span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>)], <span class="at">by=</span><span class="fu">c</span>(<span class="st">"SID"</span>))<span class="ot">-&gt;</span>dt</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>dt_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(dt,<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>acc<span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">names</span>(clock_ctl)[<span class="fu">names</span>(clock_ctl)<span class="sc">%like%</span><span class="st">"AgeAccel"</span>],<span class="fu">c</span>(<span class="st">"IEAA"</span>, <span class="st">"IEAA.Hannum"</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"SID"</span>,acc,<span class="st">"DNAmTLAdjAge"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>cols</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "SID"                           "AgeAccelerationResidualHannum"
+[3] "AgeAccelGrim"                  "AgeAccelPheno"                
+[5] "IEAA"                          "IEAA.Hannum"                  
+[7] "DNAmTLAdjAge"                 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>clock<span class="ot">&lt;-</span><span class="fu">rbind</span>(clock_adults[,.SD,<span class="at">.SDcols=</span>cols],clock_adults[,.SD,<span class="at">.SDcols=</span>cols])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<!-- - `DNAmAge` Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock.  Developed by Steve Horvath and trained on many different human cell types & tissues. @Horvath2013  -->
+<!-- - `DNAmPhenoAge` PhenoAge: PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab. @Levin2018 -->
+<!-- - `DNAmAgeHannum`: Blood predictor of age, based on work by Hannum in Ideker lab 2013. @Hannum2013 -->
+<!-- - `DNAmAgeSkinBloodClock`  Horvath2, Skin & Blood Age: Skin&BloodAge is trained on blood, saliva, buccal, and skin samples.  It is useful for in vitro studies and it is one of if not the most accurate age predictors available.@Horvath2018 -->
+<!-- - `IEAA`,  Intrinsic cellular age Horvath: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016 -->
+<!-- - `IEAA.Hannum` Intrinsic cellular age Hannum: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016 -->
+<!-- - `DNAmGrimAge2BasedOnPredictedAge` Grim2 predicted age: Follow-on version of GrimAge mortality predictor when imputing age with Skin&BloodAge clock.  Developed by Ake Lu and Steve Horvath.@Lu2022 -->
+<!-- - `DNAmGrimAge2BasedOnRealAge` Grim2 real age: Follow-on version of GrimAge which is considered the best mortality predictor available.  Developed by Ake Lu and Steve Horvath.@Lu2022 -->
+<!-- ```{r} -->
+<!-- cols <-c("DNAmAge", "DNAmAgeHannum", "DNAmPhenoAge", "DNAmAgeSkinBloodClock", "DNAmGrimAge2BasedOnPredictedAge", "DNAmGrimAge2BasedOnRealAge" -->
+<!-- ) -->
+<!-- cols_acc <- c("IEAA", "IEAA.Hannum") -->
+<!-- dtage <- cbind(clock[,.SD,.SDcols=c("SID",cols_acc)],clock[,lapply(.SD,function(x) x-Age),.SDcols=c(cols)]) -->
+<!-- merge(dtage,ss_adults[,.SD,.SDcols=c("SID","Condition")], by=c("SID"))->dt -->
+<!-- dt_long <- melt(dt,id.vars = c("SID","Condition")) -->
+<!-- ``` -->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ss_all<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/SS.rds"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ss_all[,SID<span class="sc">:</span><span class="er">=</span><span class="fu">make.names</span>(Sample_Name)]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">intersect</span>(clock<span class="sc">$</span>SID,ss_all<span class="sc">$</span>SID)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">merge</span>(clock,ss_all[,.SD,<span class="at">.SDcols=</span><span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>)], <span class="at">by=</span><span class="fu">c</span>(<span class="st">"SID"</span>))<span class="ot">-&gt;</span>dt</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>dt_long <span class="ot">&lt;-</span> <span class="fu">melt</span>(dt,<span class="at">id.vars =</span> <span class="fu">c</span>(<span class="st">"SID"</span>,<span class="st">"Condition"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell page-columns page-full" data-fig.format="svg">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>p1<span class="ot">&lt;-</span><span class="fu">ggplot</span>(dt_long[variable <span class="sc">%in%</span> cols_acc,], <span class="fu">aes</span>(<span class="at">x=</span>variable, <span class="at">y=</span>value, <span class="at">fill=</span> variable)) <span class="sc">+</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill=</span>variable),<span class="at">outlier.fill=</span><span class="st">"ivory"</span>,<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="co"># scale_fill_manual(ys=levels(col_subclass)) +</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="co"># geom_jitter(#color=pdata$color,</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             size=0.1,show.legend = TRUE,</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             alpha=0.2) +</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="co">#theme_ipsum() +</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme</span>(</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position=</span><span class="st">"left"</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">+</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">"Intrinsic celluar age"</span>) <span class="sc">+</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">"method"</span>)<span class="sc">+</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"Predicted age - real age"</span>)<span class="sc">+</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">60</span>))<span class="sc">+</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"~ Condition"</span> )),<span class="at">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span><span class="fu">ggplot</span>(dt_long, <span class="fu">aes</span>(<span class="at">x=</span>Condition, <span class="at">y=</span>value, <span class="at">fill=</span> Condition)) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill=</span>Condition),<span class="at">outlier.fill=</span><span class="st">"ivory"</span>,<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      <span class="co"># scale_fill_manual(ys=levels(col_subclass)) +</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="co"># geom_jitter(#color=pdata$color,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             size=0.1,show.legend = TRUE,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             alpha=0.2) +</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>      <span class="co">#theme_ipsum() +</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position=</span><span class="st">"left"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">+</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">"Comparison of DNAm-based age acceleration (Chronological vs celluar age) between XALD conditions"</span>) <span class="sc">+</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">"Condition"</span>)<span class="sc">+</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"Age acceleration"</span>)<span class="sc">+</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>            <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">60</span>))<span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"~ variable"</span> )),<span class="at">ncol =</span> <span class="dv">2</span>,<span class="at">scales=</span><span class="st">"free"</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display column-page">
-<p><img src="horvath_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" style="width:100.0%"></p>
+<p><img src="horvath_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" style="width:100.0%"></p>
 </div>
 </div>
-<p>These results seem to confirm our previous findings. There is no acceleration in aging for the X- Ald group without cerebral condition, but there is some acceleration for the other group</p>
-<div class="cell page-columns page-full" data-fig.format="svg">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(backports)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: backports</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p2<span class="ot">&lt;-</span><span class="fu">ggplot</span>(dt_long[<span class="sc">!</span>variable <span class="sc">%in%</span> cols_acc,], <span class="fu">aes</span>(<span class="at">x=</span>variable, <span class="at">y=</span>value, <span class="at">fill=</span> variable)) <span class="sc">+</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>     <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill=</span>variable),<span class="at">outlier.fill=</span><span class="st">"ivory"</span>,<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>      <span class="co"># scale_fill_manual(ys=levels(col_subclass)) +</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="co"># geom_jitter(#color=pdata$color,</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             size=0.1,show.legend = TRUE,</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             alpha=0.2) +</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="co">#theme_ipsum() +</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme</span>(</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position=</span><span class="st">"left"</span>,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">11</span>)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">+</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ggtitle</span>(<span class="st">"Difference between chronological age and predicted biological age"</span>) <span class="sc">+</span></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">xlab</span>(<span class="st">"method"</span>)<span class="sc">+</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ylab</span>(<span class="st">"Predicted age - real age"</span>)<span class="sc">+</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>            <span class="fu">scale_x_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">angle =</span> <span class="dv">60</span>))<span class="sc">+</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">"~ Condition"</span> )),<span class="at">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display column-page">
-<p><img src="horvath_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" style="width:100.0%"></p>
-</div>
-</div>
-<p>There are some that predict more and some that predic less. We need to check on our controls.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ss_all<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/SS.rds"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Female<span class="ot">=</span><span class="dv">0</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Tissue<span class="ot">=</span><span class="st">"Blood PBMC"</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ss_all[,SampleID<span class="sc">:</span><span class="er">=</span>Sample_Name]</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>ss_all<span class="sc">$</span>Sample_Name<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>ss_horvath<span class="ot">&lt;-</span>ss_all[<span class="sc">!</span>SampleID <span class="sc">%in%</span> ss_adults<span class="sc">$</span>SID,]</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(ss_horvath,<span class="st">"SampleID"</span>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>betas<span class="ot">&lt;-</span>minfi<span class="sc">::</span><span class="fu">getBeta</span>(<span class="fu">readRDS</span>(<span class="st">"data/controls.rds"</span>))</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>b<span class="ot">&lt;-</span>data.table<span class="sc">::</span><span class="fu">as.data.table</span>(betas,<span class="at">keep.rownames =</span> T)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>b[,ProbeID<span class="sc">:</span><span class="er">=</span>rn]</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>b<span class="sc">$</span>rn<span class="ot">&lt;-</span><span class="cn">NULL</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">setcolorder</span>(b,<span class="fu">c</span>(<span class="st">"ProbeID"</span>,ss_horvath<span class="sc">$</span>SampleID))</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(b,<span class="st">"data/controls_betas.csv"</span>)</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fwrite</span>(ss_horvath,<span class="st">"data/ss_controls.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>This results suggest age acceleration for the controls in the extrinsic measures. This differences seem to disappear in the intrinsic approach where cell count of different cell populations is taken into account on the regeresion model.</p>
 
 
 </section>
