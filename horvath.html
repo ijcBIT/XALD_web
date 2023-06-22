@@ -55,7 +55,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -172,7 +191,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">References</span></a>
+ <span class="menu-text">Bibliography</span></a>
   </div>
 </li>
     </ul>
@@ -237,40 +256,40 @@ Calculation of epigenetic aging biomarkers
 <h1>Epigenetic Age Acceleration (EAA):</h1>
 <p>From the results of the Epigenetic Age Clock calculator we are going to use the following:</p>
 <ol type="1">
-<li><code>AgeAccelerationResidualHannum</code> <span class="citation" data-cites="Hannum2013">@Hannum2013</span>:</li>
+<li><code>AgeAccelerationResidualHannum</code> <span class="citation" data-cites="Hannum2013">Hannum et al. (<a href="#ref-Hannum2013" role="doc-biblioref">2013</a>)</span>:</li>
 </ol>
 <ul>
 <li>The predicted age has been calculated using blood samples, based on work by Hannum in Ideker lab 2013.</li>
 </ul>
 <ol start="2" type="1">
-<li><code>AgeAccelGrim</code><span class="citation" data-cites="Lu2019">@Lu2019</span>:</li>
+<li><code>AgeAccelGrim</code><span class="citation" data-cites="Lu2019">Lu, Quach, et al. (<a href="#ref-Lu2019" role="doc-biblioref">2019</a>)</span>:</li>
 </ol>
 <ul>
 <li>GrimAge is considered the best mortality predictor available. Developed by Ake Lu and Steve Horvath.</li>
 <li>based on seven DNA methilation estimators of plasma proteins and a DNA methylation estimator of smoking pack-years</li>
 </ul>
 <ol start="3" type="1">
-<li><code>AgeAccelPheno</code> <span class="citation" data-cites="Levin2018">@Levin2018</span>:</li>
+<li><code>AgeAccelPheno</code> <span class="citation" data-cites="Levine2018">Levine et al. (<a href="#ref-Levine2018" role="doc-biblioref">2018</a>)</span>:</li>
 </ol>
 <ul>
 <li>PhenoAge morbidity &amp; mortality predictor, developed by Morgan Levine in Steve Horvath’s lab.</li>
 <li>This biomarker was developed using data from whole blood, it correlates strongly with age in every tissue and cell tested.</li>
 </ul>
 <ol start="4" type="1">
-<li><code>IEAA</code> <span class="citation" data-cites="Chen2016">@Chen2016</span> <span class="citation" data-cites="Horvath2013">@Horvath2013</span>:<br>
+<li><code>IEAA</code> <span class="citation" data-cites="Chen2016">Chen et al. (<a href="#ref-Chen2016" role="doc-biblioref">2016</a>)</span> <span class="citation" data-cites="Horvath2013">Horvath (<a href="#ref-Horvath2013" role="doc-biblioref">2013</a>)</span>:<br>
 </li>
 </ol>
 <ul>
 <li>Intrinsic cellular age Horvath: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.</li>
 </ul>
 <ol start="5" type="1">
-<li><code>IEAA.Hannum</code><span class="citation" data-cites="Chen2016">@Chen2016</span> <span class="citation" data-cites="Hannum2013">@Hannum2013</span></li>
+<li><code>IEAA.Hannum</code><span class="citation" data-cites="Chen2016">Chen et al. (<a href="#ref-Chen2016" role="doc-biblioref">2016</a>)</span> <span class="citation" data-cites="Hannum2013">Hannum et al. (<a href="#ref-Hannum2013" role="doc-biblioref">2013</a>)</span></li>
 </ol>
 <ul>
 <li>Intrinsic cellular age Hannum: Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.</li>
 </ul>
 <ol start="6" type="1">
-<li><code>DNAmTLAdjAge</code> <span class="citation" data-cites="Lu2019tl">@Lu2019tl</span>:</li>
+<li><code>DNAmTLAdjAge</code> <span class="citation" data-cites="Lu2019tl">Lu, Seeboth, et al. (<a href="#ref-Lu2019tl" role="doc-biblioref">2019</a>)</span>:</li>
 </ol>
 <ul>
 <li>The residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age.</li>
@@ -386,9 +405,29 @@ Calculation of epigenetic aging biomarkers
 <p>This results suggest age acceleration for the controls in the extrinsic measures. This differences seem to disappear in the intrinsic approach where cell count of different cell populations is taken into account on the regeresion model.</p>
 
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Chen2016" class="csl-entry" role="listitem">
+Chen, Brian H, Riccardo E Marioni, Elena Colicino, Marjolein J Peters, Cavin K Ward-Caviness, Pei-Chien Tsai, Nicholas S Roetker, et al. 2016. <span>“DNA Methylation-Based Measures of Biological Age: Meta-Analysis Predicting Time to Death.”</span> <em>Aging</em> 8 (September): 1844–65. <a href="https://doi.org/10.18632/aging.101020">https://doi.org/10.18632/aging.101020</a>.
+</div>
+<div id="ref-Hannum2013" class="csl-entry" role="listitem">
+Hannum, Gregory, Justin Guinney, Ling Zhao, Li Zhang, Guy Hughes, SriniVas Sadda, Brandy Klotzle, et al. 2013. <span>“Genome-Wide Methylation Profiles Reveal Quantitative Views of Human Aging Rates.”</span> <em>Molecular Cell</em> 49 (January): 359–67. <a href="https://doi.org/10.1016/j.molcel.2012.10.016">https://doi.org/10.1016/j.molcel.2012.10.016</a>.
+</div>
+<div id="ref-Horvath2013" class="csl-entry" role="listitem">
+Horvath, Steve. 2013. <span>“DNA Methylation Age of Human Tissues and Cell Types.”</span> <em>Genome Biology</em> 14: R115. <a href="https://doi.org/10.1186/gb-2013-14-10-r115">https://doi.org/10.1186/gb-2013-14-10-r115</a>.
+</div>
+<div id="ref-Levine2018" class="csl-entry" role="listitem">
+Levine, Morgan E, Ake T Lu, Austin Quach, Brian H Chen, Themistocles L Assimes, Stefania Bandinelli, Lifang Hou, et al. 2018. <span>“An Epigenetic Biomarker of Aging for Lifespan and Healthspan.”</span> <em>Aging</em> 10 (April): 573–91. <a href="https://doi.org/10.18632/aging.101414">https://doi.org/10.18632/aging.101414</a>.
+</div>
+<div id="ref-Lu2019" class="csl-entry" role="listitem">
+Lu, Ake T, Austin Quach, James G Wilson, Alex P Reiner, Abraham Aviv, Kenneth Raj, Lifang Hou, et al. 2019. <span>“DNA Methylation GrimAge Strongly Predicts Lifespan and Healthspan.”</span> <em>Aging</em> 11 (January): 303–27. <a href="https://doi.org/10.18632/aging.101684">https://doi.org/10.18632/aging.101684</a>.
+</div>
+<div id="ref-Lu2019tl" class="csl-entry" role="listitem">
+Lu, Ake T, Anne Seeboth, Pei-Chien Tsai, Dianjianyi Sun, Austin Quach, Alex P Reiner, Charles Kooperberg, et al. 2019. <span>“DNA Methylation-Based Estimator of Telomere Length.”</span> <em>Aging</em> 11 (August): 5895–5923. <a href="https://doi.org/10.18632/aging.102173">https://doi.org/10.18632/aging.102173</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
