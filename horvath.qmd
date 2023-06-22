@@ -12,16 +12,34 @@ Many different approaches have been used to predict age from epigenetic marks. P
 ::: {.callout-tip}
 ## Calculation of epigenetic aging biomarkers
 
-Epigenetic age was calculated using five clocks: the Horvath Pan Tissue, Horvath Skin-Blood, Hannum Blood, PhenoAge, and GrimAge clocks. We calculated all epigenetic aging biomarkers utilizing the online Horvath calculator (http://dnamage.genetics.ucla.edu/) with the advanced analysis option. The outcome of interest was the “AgeAccelerationResidual” or residuals resulting from a linear regression model where each DNA methylation clock is regressed on chronological age of each participant. We refer to all acceleration measures as Epigenetic Age Acceleration (EAA) for the specific clock and defined the residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age as DNAmTL adjusted for age. A positive EAA indicates that the estimated epigenetic age is higher than the chronological age (increased biological aging) and a negative DNAmTL adjusted for age reflects a shorter telomere length. In addition, we tested Extrinsic EAA (EEAA) and Intrinsic EAA (IEAA) for Hannum’s and Horvath’s clocks, respectively51. The EEAA measure is associated with age-related changes in blood cell counts due to immune system aging and is calculated by upweighting the contributions of age-associated blood cell counts (naive cytotoxic T cells, exhausted cytotoxic T cells, and plasmablasts). The IEAA measure is independent of blood cell counts, represents intrinsic cellular aging, and is calculated by adding immune cell counts in addition to chronological age when calculating regression residuals. Analyses of epigenetic clocks included the 489 participants with high quality DNA methylation data.
+We calculated all epigenetic aging biomarkers utilizing the online Horvath calculator (http://dnamage.genetics.ucla.edu/) with the advanced analysis option. The outcome of interest was the *“AgeAccelerationResidual”* or residuals resulting from a linear regression model where each DNA methylation clock is regressed on chronological age of each participant. We refer to all acceleration measures as Epigenetic Age Acceleration (EAA) for the specific clock and defined the residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age as DNAmTL adjusted for age. A positive EAA indicates that the estimated epigenetic age is higher than the chronological age (increased biological aging) and a negative DNAmTL adjusted for age reflects a shorter telomere length. In addition, we tested Extrinsic EAA (EEAA) and Intrinsic EAA (IEAA) for Hannum’s and Horvath’s clocks, respectively51. The EEAA measure is associated with age-related changes in blood cell counts due to immune system aging and is calculated by upweighting the contributions of age-associated blood cell counts (naive cytotoxic T cells, exhausted cytotoxic T cells, and plasmablasts). The IEAA measure is independent of blood cell counts, represents intrinsic cellular aging, and is calculated by adding immune cell counts in addition to chronological age when calculating regression residuals. Analyses of epigenetic clocks included the 489 participants with high quality DNA methylation data.
 :::
 
+# Epigenetic Age Acceleration (EAA):
+
+From the results of the Epigenetic Age Clock calculator we are going to use the following:
 
 
-From the results of the Epigenetic Age Clockcalculator we are going to use the following:
+1. `AgeAccelerationResidualHannum` @Hannum2013: 
+  - The predicted age has been calculated using blood samples, based on work by Hannum in Ideker lab 2013. 
 
+2. `AgeAccelGrim`@Lu2019: 
+  - GrimAge is considered the best mortality predictor available.  Developed by Ake Lu and Steve Horvath. 
+  - based on seven DNA methilation estimators of plasma proteins and a DNA methylation estimator of smoking pack-years
 
+3. `AgeAccelPheno` @Levin2018:
+  - PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab. 
+  - This biomarker was developed using data from whole blood, it correlates strongly with age in every tissue and cell tested.
 
+4. `IEAA` @Chen2016 @Horvath2013:	
+  - Intrinsic cellular age Horvath:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.
 
+5. `IEAA.Hannum`@Chen2016 @Hannum2013 
+  - Intrinsic cellular age Hannum:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.
+
+6. `DNAmTLAdjAge` @Lu2019tl:
+  - The residuals of the DNA methylation estimate of telomere length linearly regressed on chronological age.
+  
 Data preparation:
 
 ```{r}
@@ -30,7 +48,25 @@ ss_adults<-readRDS("data/ss_Adults.rds")
 ss_adults[,SID:=Sample_Name]
 ss_adults$Sample_Name<-NULL
 ```
+```{r}
+#| eval: false
+ss_all<-readRDS("data/SS.rds")
+ss_all$Female=0
+ss_all$Tissue="Blood PBMC"
+ss_all[,SampleID:=Sample_Name]
+ss_all$Sample_Name<-NULL
 
+data.table::setcolorder(ss_all,"SampleID")
+betas<-minfi::getBeta(readRDS("data/controls.rds"))
+b<-data.table::as.data.table(betas,keep.rownames = T)
+b[,ProbeID:=rn]
+b$rn<-NULL
+ss_horvath <- ss_all[SampleID %in% intersect(colnames(b),ss_all$SampleID),]
+b<-b[,.SD,.SDcols=c("ProbeID",intersect(colnames(b),ss_all$SampleID))]
+data.table::setcolorder(b,c("ProbeID",ss_horvath$SampleID))
+data.table::fwrite(b,"data/controls_betas.csv")
+data.table::fwrite(ss_horvath,"data/ss_controls.csv")
+```
 
 ```{r}
 #| eval: false
@@ -53,39 +89,60 @@ data.table::fwrite(ss_horvath,"data/ss_adults.csv")
 Now this data is sent to the horvath calculator and these are the results:
 
 ```{r}
-clock <- data.table::fread("data/DNAmAgeCalcProject_2124_Results.csv")
+clock_adults <- data.table::fread("data/DNAmAgeCalcProject_2124_Results.csv")
+clock_ctl <- data.table::fread("data/DNAmAgeCalcProject_2638_Results.csv")
 ```
 
-- `DNAmAge` Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock.  Developed by Steve Horvath and trained on many different human cell types & tissues. @Horvath2013 
-- `DNAmPhenoAge` PhenoAge:	PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab. @Levin2018
-- `DNAmAgeHannum`:	Blood predictor of age, based on work by Hannum in Ideker lab 2013. @Hannum2013
-
-- `DNAmAgeSkinBloodClock`	Horvath2, Skin & Blood Age:	Skin&BloodAge is trained on blood, saliva, buccal, and skin samples.  It is useful for in vitro studies and it is one of if not the most accurate age predictors available.@Horvath2018
-- `IEAA`,	Intrinsic cellular age Horvath:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016
-- `IEAA.Hannum` Intrinsic cellular age Hannum:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016
-- `DNAmGrimAge2BasedOnPredictedAge` Grim2 predicted age: Follow-on version of GrimAge mortality predictor when imputing age with Skin&BloodAge clock.  Developed by Ake Lu and Steve Horvath.@Lu2022
-
-- `DNAmGrimAge2BasedOnRealAge` Grim2 real age: Follow-on version of GrimAge which is considered the best mortality predictor available.  Developed by Ake Lu and Steve Horvath.@Lu2022
-
-
-
-
+```{r}
+acc<- c(names(clock_ctl)[names(clock_ctl)%like%"AgeAccel"],c("IEAA", "IEAA.Hannum"))
+cols <- c("SID",acc,"DNAmTLAdjAge")
+cols
+```
 
 
 ```{r}
-cols <-c("DNAmAge", "DNAmAgeHannum", "DNAmPhenoAge", "DNAmAgeSkinBloodClock", "DNAmGrimAge2BasedOnPredictedAge", "DNAmGrimAge2BasedOnRealAge"
-)
-cols_acc <- c("IEAA", "IEAA.Hannum")
-dtage <- cbind(clock[,.SD,.SDcols=c("SID",cols_acc)],clock[,lapply(.SD,function(x) x-Age),.SDcols=c(cols)])
-merge(dtage,ss_adults[,.SD,.SDcols=c("SID","Condition")], by=c("SID"))->dt
+
+clock<-rbind(clock_adults[,.SD,.SDcols=cols],clock_adults[,.SD,.SDcols=cols])
+```
+
+
+<!-- - `DNAmAge` Horvath1, Pan-tissue clock: The original Horvath 2013 pan-tissue clock.  Developed by Steve Horvath and trained on many different human cell types & tissues. @Horvath2013  -->
+<!-- - `DNAmPhenoAge` PhenoAge:	PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab. @Levin2018 -->
+<!-- - `DNAmAgeHannum`:	Blood predictor of age, based on work by Hannum in Ideker lab 2013. @Hannum2013 -->
+
+<!-- - `DNAmAgeSkinBloodClock`	Horvath2, Skin & Blood Age:	Skin&BloodAge is trained on blood, saliva, buccal, and skin samples.  It is useful for in vitro studies and it is one of if not the most accurate age predictors available.@Horvath2018 -->
+<!-- - `IEAA`,	Intrinsic cellular age Horvath:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016 -->
+<!-- - `IEAA.Hannum` Intrinsic cellular age Hannum:	Intrinsic cell aging measure, which tries to eliminate effects of cellular composition.@Chen2016 -->
+<!-- - `DNAmGrimAge2BasedOnPredictedAge` Grim2 predicted age: Follow-on version of GrimAge mortality predictor when imputing age with Skin&BloodAge clock.  Developed by Ake Lu and Steve Horvath.@Lu2022 -->
+
+<!-- - `DNAmGrimAge2BasedOnRealAge` Grim2 real age: Follow-on version of GrimAge which is considered the best mortality predictor available.  Developed by Ake Lu and Steve Horvath.@Lu2022 -->
+
+<!-- ```{r} -->
+<!-- cols <-c("DNAmAge", "DNAmAgeHannum", "DNAmPhenoAge", "DNAmAgeSkinBloodClock", "DNAmGrimAge2BasedOnPredictedAge", "DNAmGrimAge2BasedOnRealAge" -->
+<!-- ) -->
+<!-- cols_acc <- c("IEAA", "IEAA.Hannum") -->
+<!-- dtage <- cbind(clock[,.SD,.SDcols=c("SID",cols_acc)],clock[,lapply(.SD,function(x) x-Age),.SDcols=c(cols)]) -->
+<!-- merge(dtage,ss_adults[,.SD,.SDcols=c("SID","Condition")], by=c("SID"))->dt -->
+<!-- dt_long <- melt(dt,id.vars = c("SID","Condition")) -->
+<!-- ``` -->
+
+```{r}
+ss_all<-readRDS("data/SS.rds")
+
+ss_all[,SID:=make.names(Sample_Name)]
+samples <- intersect(clock$SID,ss_all$SID)
+merge(clock,ss_all[,.SD,.SDcols=c("SID","Condition")], by=c("SID"))->dt
 dt_long <- melt(dt,id.vars = c("SID","Condition"))
 ```
 
 
-```{r}
+```{r, fig.height= 8}
+#| column: page
+#| out-width: 100%
+#| fig-format: svg
 library(ggplot2)
-p1<-ggplot(dt_long[variable %in% cols_acc,], aes(x=variable, y=value, fill= variable)) +
-     geom_boxplot(aes(fill=variable),outlier.fill="ivory",alpha = 0.5) +
+p2<-ggplot(dt_long, aes(x=Condition, y=value, fill= Condition)) +
+     geom_boxplot(aes(fill=Condition),outlier.fill="ivory",alpha = 0.5) +
       # scale_fill_manual(ys=levels(col_subclass)) +
       # geom_jitter(#color=pdata$color,
       #             size=0.1,show.legend = TRUE,
@@ -96,38 +153,14 @@ p1<-ggplot(dt_long[variable %in% cols_acc,], aes(x=variable, y=value, fill= vari
         legend.position="left",
         plot.title = element_text(size=11)
       ) +
-      ggtitle("Intrinsic celluar age") +
-      xlab("method")+
-    ylab("Predicted age - real age")+
+      ggtitle("DNAm-based age acceleration between XALD conditions") +
+      xlab("Condition")+
+    ylab("Age acceleration")+
             scale_x_discrete(guide = guide_axis(angle = 60))+
     
-    facet_wrap(as.formula(paste("~ Condition" )),ncol = 2)
-p1
-
-
-
-```
-```{r}
-require(backports)
-p2<-ggplot(dt_long[!variable %in% cols_acc,], aes(x=variable, y=value, fill= variable)) +
-     geom_boxplot(aes(fill=variable),outlier.fill="ivory",alpha = 0.5) +
-      # scale_fill_manual(ys=levels(col_subclass)) +
-      # geom_jitter(#color=pdata$color,
-      #             size=0.1,show.legend = TRUE,
-      #             alpha=0.2) +
-
-      #theme_ipsum() +
-      theme(
-        legend.position="left",
-        plot.title = element_text(size=11)
-      ) +
-      ggtitle("Difference between chronological age and predicted biological age") +
-      xlab("method")+
-    ylab("Predicted age - real age")+
-            scale_x_discrete(guide = guide_axis(angle = 60))+
-    
-    facet_wrap(as.formula(paste("~ Condition" )),ncol = 2)
+    facet_wrap(as.formula(paste("~ variable" )),ncol = 3,scales="free")
 p2
-
 ```
+
+This results suggest age acceleration for the controls in the extrinsic measures. This differences seem to disappear in the intrinsic approach where cell count of different cell populations is taken into account on the regeresion model.
 

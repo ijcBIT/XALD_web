@@ -68,7 +68,7 @@ dtable<-function(data){
 
         options = list(
           paging = TRUE,
-          pageLength = 20,
+          pageLength = 10,
           searching = TRUE,
           fixedColumns = TRUE,
           autoWidth = FALSE,
@@ -493,7 +493,7 @@ Dataset means are all significantlly diferent (either with wilcoxon or student t
 
 ### Plots:
 
-```{r boxplot, fig.height= 24 }
+```{r boxplot, fig.height= 12 }
 #| column: page
 #| out-width: 100%
 #| fig-format: svg
@@ -1288,7 +1288,7 @@ saveRDS(dtp, "data/dtp.rds")
 ```
 
 
-```{r top_probes_contrast, fig.height=32, dpi=200}
+```{r top_probes_contrast, fig.height=24, dpi=200}
 #| column: page
 #| layout-ncol: 3
 #| results: hide 
