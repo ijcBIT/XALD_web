@@ -6,7 +6,7 @@ title: "XALD epigenic landscape"
 
 This report focusses on the following questions:
 
-1. Are there age-related methylation changes associated with XALD and do XALD patients show accelarated aging compared to controls?
+1. Are there age-related methylation changes associated with XALD and do XALD patients show accelarated aging compared to controls ?
 
 2. Which DNA methylation changes are associated with XALD ?
 
