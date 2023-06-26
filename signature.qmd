@@ -150,13 +150,23 @@ There are 2 ways in which we are going to check for the age signature of our con
 
 -   1.B: By subsetting the EPIC methylation array sites to those that have been previously reported to change methylation with age.
 
+
+As the difference between XALD age groups where much less then those observed in previous studies (REF?), we set out to confirm the existance of age signatures (age associated methylation changes)
+in our control samples. First we will check for any changes between healthy children and adult controls, and secondly we check those against known age-associated sites.
+
+
 ## PBMC cell aging signature:{#sec-PBMC}
 
-To answer question 1.B we are going to take as a reference the work made by Wilma, T. et al @Steegenga2014
+As reference set we will use age-reated sites described in the paper by Wilma, T. et al @Steegenga2014
 
-In their paper they present 3 datasets: 1. cgSet_Exprs: The set of probes that come from observed changes in methylation AND in expression (398 genes) 2. cgSet_NO: The set of probes that come from observed changes in methylation BUT NOT expression (2390 genes) 3. cgSet_pre: The set of probes reported to be age-related on previous literature.
+In fact the authors utilized 3 different datasets: 
 
-And we created a new one combining 2 &3: 4. cgSetm: The combination/union of cgSet_Exprs & cgSet_NO
+1. cgSet_Exprs: Probes with observed methylation changes AND change in expression in the associated genes (total 398 genes) 
+2. cgSet_NO:    Probes with observed methylation changes but NO change in expression in the associated genes (2390 genes) 
+3. cgSet_pre:   Probes reported to be age-related in previous literature (liture-curated).
+
+We created an additional one by combining 2 &3: 4. cgSetm: The combination/union of cgSet_Exprs & cgSet_NO
+
 
 So let's prepare our data replicating their workflow:
 
