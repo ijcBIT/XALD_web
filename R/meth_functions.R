@@ -1,7 +1,7 @@
 # global opts:
 options(future.globals.maxSize= 189128960000)
-source("~/Projects/dmpdmrs.R")
-source("~/Projects/report_functions.R")
+# source("~/Projects/dmpdmrs.R")
+# source("~/Projects/report_functions.R")
 # amke results folders:
 make_results_dirs <- function(results_folder = "./results/", analysis_folder = "./analysis/",subf){
   params<-list(
