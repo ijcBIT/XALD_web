@@ -95,41 +95,15 @@ renderDT<- function(data){
 ```
 
 
-# Experimental conditions:
-
-There are 2 disease conditions AMN and cerebral (cALD for child cAMN for
-adults) and 2 age groups adults \>=18 & child \<18.
-
-```{r experimental}
-source("R/functions.R")
-library(data.table)
-ss<-readRDS("data/SS.rds")
-ss$age_grp <- "Adult"
-ss[Age < 18, age_grp:="Child"]
-table(ss$age_grp,ss$Condition)
-
-```
-
-The main goal is to study adults and whether the relation between age
-and methylation is different between control and diseased AMN vs
-CTL.adult. A secondary analysis is the inclusion of child subjects,
-which can be included in the second part of the analysis.
-
 # Standard analysis
 
 ## Workflow:
 
-The standard analysis has 3 steps:
+The standard workflow consists of three steps: 1) pre-processing (qc, signal normalization, filtering); 2) differential analysis (DMPs,DMRs) and 3) functional analysis of DMR associated genes (GO, pathways)
 
 ### 1.Pre-processing:
 
-#### Background correction:
-
-Data is cleaned and filtered before being analysed. The `preprocessNoob`
-function from `minfi` package is used to remove background noise. And a
-visual inspection of the data is done [raw-qc](standard.qmd#sec-qc)
-
-#### Data filtering:
+#### Data QC:
 
 The following filters are applied:
 
@@ -143,20 +117,29 @@ After applying these filters one sample was discarded:
 ```{r}
 ss <- ss[Sample_Name != "lnf-21.5",]
 ```
+#### Background correction and signal normalization:
 
-### 2.Differential analysis:
+Raw signal is normalized. The `preprocessNoob` function from `minfi` package is used to remove background noise and a
+visual inspection of the data is done [raw-qc](standard.qmd#sec-qc). Signal normalization with ssNoob.
 
-Once data is clean the diffrences in methylation between different
-groups is analysed using regression models. In this case we use the
-limma package and the\
-following models are tested:
+#### Filtering:
+
+Known cross-reactive probes and SNP are filtered out.
+
+
+### 2.Differential methylation analysis:
+
+Differences in methylation between different groups is analysed using linear regression models. For single probes (DMPs) we use the limma package, for regions of adjacent probes we use DMRcate (also rliear regression based). 
+
+To answer the research questions we employ the following models: 
 
 #### model 1:
 
-Here we used only adults and created a variable called `Type` , which
-contains 2 groups:
+Identify methylation change associated with adult XALD.
 
--   disease: merges AMN and cAMN together in a single group.
+Only using adult samples we create a variable called `Type` , which contains 2 groups:
+
+-   disease: AMN and cAMN merged together in a single group.
 
 -   controls: the adult controls.
 
@@ -171,13 +154,16 @@ table(ss[age_grp=="Adult", Type])
 
 Formula: meth \~ 0 + AMN_Type
 
-No difference at probe-level or region level observed.
+RESULTS:
+
+No difference at probe-level or region level observed.  (pval =?, FDR =?)
 
 #### model 2:
 
-Here we used all samples child and adults alike and created the
-`Condition` variable, which contain 5 groups formed by all the possible
-combinations of disease group and age:
+Are there any methylation changes associated with any of experiment groups such as age or disease phenotype?
+
+Combining children and adults we create a `Condition` variable, which contains 5 groups formed by all available
+combinations of disease and age phenotypes:
 
 -   CTL.adult: Control samples for adults
 
@@ -200,16 +186,20 @@ table(ss[, Condition])
 
 Formula: meth \~ 0 + Condition
 
-**This model was statistically significant for the contrast cALD-cAMN. at
-the probe level with 116 DMPs.**
+**This model was statistically significant (pval =?) for the comparison (contrast) cALD-cAMN identifying 116 differentially methylated probes (DMPs).** 
 
-No difference at region level observed.
+No differentially methylated regions (DMRs) could be identified (FDR, meth difference ?).
 
-#### model 3 = m2 + Age as a covariate
 
+#### model 3
+
+Aside from age (0-82 years) associated, are there any specific methylation changes associated with any of the experimental groups?
+
+model 3 = m2 + Age as a covariate
 Formula: meth \~ 0 + Condition + Age
 
 No difference at probe-level or region level observed.
+
 
 ### 3. Pathway analysis{#sec-pathway}
 
@@ -222,19 +212,14 @@ Condition).](data/pathways_m2_camd-cald.png){alt="Pathway analysis from genes as
 ## Discussion
 
 We performed a [Standard methylation
-analysis](standard.qmd#sec-workflow), following the usual workflow.
+analysis](standard.qmd#sec-workflow), following our standard.
 
-From this analysis we only observed methylation differences between
-diseased childs, which show the cerebral condition and diseased adults
-without that condition. One of the factors that could explain those
-differences in methylation is age.
+Within the adult group we don't detect significant difference between controls and disease. Incoorporating children samples, we observe few differences between children and adults with cerebralALD/AMN
+but none in the other age~phonotype comparisons. Correcting for age (as a continous variable) in the analysis, confirms age as the dominating factors.
 
-Thus, in order to adjust for age, the same analysis was repeated
-introducing the known biological age as a covariate in the linear model
-(m3) and no differences where observed.
+Nevertheless, the amount of changes related to age in XALD where much less than expected from previous studies.
 
-To further study if there is an age-accelerating effect on the disease
-we propose:
+For this reason (and to further study the pattern of age related changes) we propose alternative approaches:
 
 1.  Genereate a [regression model with age-corrected ](signature.qmd#sec-residuals) beta values, to remove the effect of age from
     the methylation values.
