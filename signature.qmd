@@ -26,6 +26,7 @@ library(S4Vectors)
 source("R/functions.R")
 
 # Controls:
+suppressMessages( readxl::read_xls("data/11357_2014_9648_MOESM2_ESM.xls",sheet = 2,skip = 2,))->sup2
 # controls <- readRDS("data/controls.rds")
   ss_ctl <- readRDS("data/ss_ctl.rds")#data.table::data.table(as.data.frame(controls@colData))
   dmps <- readRDS("data/dmps.rds")
@@ -48,8 +49,6 @@ disease_dt_path <- readRDS("data/disease_dt_path.rds")
 
 
 ```
-
-
 
 ```{r dtable function}
 #| include: false
@@ -139,8 +138,7 @@ renderDT<- function(data){
 
 ```
 
-
-# Question 1: difference between controls age/young: {#sec-intro}
+# Question 1: Aging signature in healthy controls (children vs adults): {#sec-intro}
 
 There are 2 ways in which we are going to check for the age signature of our controls.
 
@@ -148,47 +146,14 @@ There are 2 ways in which we are going to check for the age signature of our con
 
 -   1.B: By subsetting the EPIC methylation array sites to those that have been previously reported to change methylation with age.
 
+As the difference between XALD age groups where much less then those observed in previous studies, we set out to confirm the existence of an age signature (age associated methylation changes) in our control samples following the workflow previously described in Steegena et al. @Steegenga2014 Briefly,
 
-As the difference between XALD age groups where much less then those observed in previous studies (REF?), we set out to confirm the existance of age signatures (age associated methylation changes)
-in our control samples. First we will check for any changes between healthy children and adult controls, and secondly we check those against known age-associated sites.
+1.  we perform a comparison between children and adult controls
+2.  we check for methylation changes at known age-associated sites.
 
+## Reference aging signature: {#sec-PBMC}
 
-## PBMC cell aging signature:{#sec-PBMC}
-
-As reference set we will use age-reated sites described in the paper by Wilma, T. et al @Steegenga2014
-
-In fact the authors utilized 3 different datasets: 
-
-1. cgSet_Exprs: Probes with observed methylation changes AND change in expression in the associated genes (total 398 genes) 
-2. cgSet_NO:    Probes with observed methylation changes but NO change in expression in the associated genes (2390 genes) 
-3. cgSet_pre:   Probes reported to be age-related in previous literature (liture-curated).
-
-We created an additional one by combining 2 &3: 4. cgSetm: The combination/union of cgSet_Exprs & cgSet_NO
-
-
-So let's prepare our data replicating their workflow:
-
-### DNA methylation & gene expression: {#sec-preprocessing}
-
-450k array where pre-processed and cleaned and the old subjects where compared to the young subjects.
-
-20,917 were significantly regulated (Lima *t* test, *p* \< 0.01) between the group of old and young subjects. Over 5 % methylation difference between the mean of the group of the young and old subjects was found for 10,625. 7,598 gene-related and 3,027 intergenic probes. From the 7,598 gene-related 640 probes where further discarded because of pseudo- and uncharacterized genes, antisense RNAs, long intergenic nonprotein coding RNAs and micro-RNAs.
-
-Finally a clean set of 6958 probes where selected and the most significant differentially expressed genes were identified using −2 \> *t* value \> 2 as a cut-off. Fig 2A
-
-![](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4082572/bin/11357_2014_9648_Fig2_HTML.jpg)
-
-398 genes where selected as the most significant differentially expressed genes and 170 of those have at least 2 associated DMPs.
-
-The following table corresponds to supplementary table 2 and contains the data they usedin the article. 
-
-```{r readexcel}
-#| column: page-inset-right
-#| echo: false
-suppressMessages( readxl::read_xls("data/11357_2014_9648_MOESM2_ESM.xls",sheet = 2,skip = 2,))->sup2
-dtable(sup2)
-
-```
+0.  Preprocessing:
 
 ## Inhouse data:
 
@@ -230,11 +195,10 @@ qc(                                                       # Makes qc plots:qcRep
     controls,sampGroups = "Sample_Group",sampNames=idcol,idcol=idcol, qc_folder = ctl_qc_dir
     )
 ```
- 
-![density_plot](`r paste0(params$ctl_qc_dir,"density_plot.png")`){alt="density_plot"}
 
-![bean_plot](`r paste0(params$ctl_qc_dir,"bean_plot.png")`){alt="bean_plot"}
+![density_plot](%60r%20paste0(params$ctl_qc_dir,%22density_plot.png%22)%60){alt="density_plot"}
 
+![bean_plot](%60r%20paste0(params$ctl_qc_dir,%22bean_plot.png%22)%60){alt="bean_plot"}
 
 There are `r 1051028#dim(controls)[1]` probes that pass QC and `r 23#dim(controls)[2]` control samples in our dataset.
 
@@ -244,7 +208,7 @@ table(ss_ctl$Condition)
 
 ### Normalization:
 
-Following the aforementioned paper @Steegenga2014 we now normalize the data using the subset-quantile within array normalization (SWAN) method:
+Following @Steegenga2014 we normalize the data using the subset-quantile within array normalization (SWAN) method:
 
 ```{r normalize controls}
 #| eval: false
@@ -266,7 +230,6 @@ full_mod<-mod(object = mvals, group_var = "Condition",
                         idcol="Sample_Name")
 saveRDS(full_mod,"data/full_mod.rds")
 ```
-
 
 ```{r}
 #| eval: false
@@ -303,12 +266,11 @@ DMPs[nchar(UCSC_RefGene_Name)>1,]
 saveRDS(DMPs,"data/dmps.rds")
 ```
 
-
 So yes, there are actually `r NROW(dmps)` DMPs.
 
 ### DMPs Plots:
 
-In the following plots you can observe 
+In the following plots you can observe
 
 ```{r dmp plots ctl}
 #| column: screen-inset-right
@@ -323,6 +285,18 @@ Now we already checked that there are methylation differences in our data by sep
 So far, we followed the proceeding from the paper in our analysis in order to mimic their workflow so the results are comparable. Nevertheless, they also measured expression values, which they used to correlate with methylation levels in order to filter the gene candidates for their age-related profile. In our case, there is no expression, so we can't construct a dataset of candidate genes taking into account gene expression. Eventhough, we can use the same datasets from their previous work on our data in order to see if the set with expression and without expression behave in a different way.
 
 ## 1.B: Intersection with reference datasets:
+
+As reference set we will use age-reated sites described in the paper by Wilma, T. et al @Steegenga2014 . Where they study the relationship between gene expression and DNA methylation changes in Peripherial Blood Mononuclear Cells (PBMC) cells
+
+The authors establish 3 different datasets of CG sites:
+
+1.  cgSet_Exprs: Probes with observed methylation changes AND change in expression in the associated genes (total 398 genes)
+2.  cgSet_NO: Probes with observed methylation changes but NO change in expression in the associated genes (2390 genes)
+3.  cgSet_pre: Probes reported to be age-related in previous literature (literature-curated).
+
+We created an additional one by combining 2 &3: 4. cgSetm: The combination/union of cgSet_Exprs & cgSet_NO
+
+We process our data according to their workflow
 
 As mentioned previously, another way to find out if there is a change in methylation associated with aging in our data is looking at those sites that have been previously reported to show this association. We will use the PBMC reference datasets (with/without expression change) plus the one from previous literature that is also mentioned in the paper from @Steegenga2014:
 
@@ -408,12 +382,10 @@ dtab[, expected:=paste0( round(tab[,2] * round( NROW(sig_mod$coefficients)/NROW(
 #| tbl-cap: Enrichment of each age-related reference set in the age control model 
 dtab
 ```
-Since the reference datasets have been previously reported to be associated with age, they can be used to filter the significant sites from our model to select those with further evidence to be related with ageing. In the table above we can observe that there is a good proportion of DMPs in the 2 age groups from the controls associated with these age-related references.
-After data preprocessing around 90% of the cgs for each reference set is present in our data, which we consider is a fair representation. 
-Our significant dataset captures more than 30% of the probes for each reference dataset, while if you look at all the different probes from the array, the overall percentage of DMPs between young and adults is 16.14% which suggests that there is some overlap between previously reported age-related sites and DMPs between young and adult controls from our study. Nevertheless, it is also advisable to include the full reference sets in further analysis.
 
-To analyse DMPs in age-related sites in the disease, we will use a combination of these reference sets, as well as sub-samples corresponding to the intersections between DMPs from our controls and the reference sets.
-For more about inhouse reference datasets @sec-inhouseref .
+Since the reference datasets have been previously reported to be associated with age, they can be used to filter the significant sites from our model to select those with further evidence to be related with ageing. In the table above we can observe that there is a good proportion of DMPs in the 2 age groups from the controls associated with these age-related references. After data preprocessing around 90% of the cgs for each reference set is present in our data, which we consider is a fair representation. Our significant dataset captures more than 30% of the probes for each reference dataset, while if you look at all the different probes from the array, the overall percentage of DMPs between young and adults is 16.14% which suggests that there is some overlap between previously reported age-related sites and DMPs between young and adult controls from our study. Nevertheless, it is also advisable to include the full reference sets in further analysis.
+
+To analyse DMPs in age-related sites in the disease, we will use a combination of these reference sets, as well as sub-samples corresponding to the intersections between DMPs from our controls and the reference sets. For more about inhouse reference datasets @sec-inhouseref .
 
 ### Betas:
 
@@ -461,10 +433,9 @@ We are ready to test mean differences and plot:
 saveRDS(pdata,"data/ctl_pdata.rds")
 ```
 
-
 ### Significance:
 
-Appart from a quantitative approach in order to measure at which extent each reference set is related to our data, a more qualitative measure can be obtained, based on statitics.  Also, these test will tell us at which extent the differences in methylation between young and adults are significant for each of the reference sets. Imagine for example, that our data has a smaller percentage of DMPs in reference set A than in set B, but the difference in methylation for sites in A are much greater than those in B. This is the kind of qualitative measurement that the statistical test will tell us.
+Appart from a quantitative approach in order to measure at which extent each reference set is related to our data, a more qualitative measure can be obtained, based on statitics. Also, these test will tell us at which extent the differences in methylation between young and adults are significant for each of the reference sets. Imagine for example, that our data has a smaller percentage of DMPs in reference set A than in set B, but the difference in methylation for sites in A are much greater than those in B. This is the kind of qualitative measurement that the statistical test will tell us.
 
 Methylation data is bimodal, since the effects of methylation can either occur by hyper or hypomethylation. This means the data is not going to show a normal distribution. Thus, a wilcoxon non-parametric test is used to compare the means .
 
@@ -556,7 +527,7 @@ p2
 
 ## Inhouse reference datasets {#sec-inhouseref}
 
-Since we suspect that our disease is related to accelarated aging but we don't really know if one reference data is going to be better than the other for our disease, we created a combination of reference sets that try to capture as much variability as posible. This sets start with the prefix `cgIn_` to differenciate them from the previous `cgSet_`. 
+Since we suspect that our disease is related to accelarated aging but we don't really know if one reference data is going to be better than the other for our disease, we created a combination of reference sets that try to capture as much variability as posible. This sets start with the prefix `cgIn_` to differenciate them from the previous `cgSet_`.
 
 We will also inspect which pathways are realted to each of these sets.
 
@@ -565,7 +536,7 @@ We will also inspect which pathways are realted to each of these sets.
 pathways_refsets<-list()
 ```
 
-In order to analyse which pathways are associated to the DMPs, we will first annotate the probes with gene names. To do that we will use the convinient annotation provided by illumina plataform for their EPIC methylation arrays. 
+In order to analyse which pathways are associated to the DMPs, we will first annotate the probes with gene names. To do that we will use the convinient annotation provided by illumina plataform for their EPIC methylation arrays.
 
 ```{r}
 #| eval: false
@@ -599,7 +570,7 @@ The consensus set by merging all reference sets and selecting significant probes
 probelist$cgIn_consensus <- unique(dt_path$cg)#intersect(row.names(sig_mod), unique(unlist(probelist)))
 ```
 
-Now we  will look at the associated pathways to that reference set:
+Now we will look at the associated pathways to that reference set:
 
 ```{r}
 #| eval: false
@@ -657,13 +628,11 @@ pathways_refsets[["cgIn_consensus"]]<-cgIn_consensus
 dtable(pathways_refsets$cgIn_consensus$hyper)
 ```
 
-
 #### Hypo pathways:
 
 ```{r}
 dtable(pathways_refsets$cgIn_consensus$hypo)
 ```
-
 
 ### cgIn_top:
 
@@ -713,13 +682,11 @@ pathways_refsets[["cgIn_pre"]]<-get_pathway(probelist$cgIn_pre,dt=dt_path)
 dtable(pathways_refsets$cgIn_pre$hyper)
 ```
 
-
 #### Hypo pathways:
 
 ```{r}
 dtable(pathways_refsets$cgIn_pre$hypo)
 ```
-
 
 ### cgIn_NO:
 
@@ -741,15 +708,11 @@ pathways_refsets[["cgIn_NO"]]<-get_pathway(probelist$cgIn_NO,dt=dt_path)
 dtable(pathways_refsets$cgIn_NO$hyper)
 ```
 
-
 #### Hypo pathways:
 
 ```{r}
 dtable(pathways_refsets$cgIn_NO$hypo)
 ```
-
-
-
 
 # Question 2: DMPs in disease {#sec-disease}
 
@@ -777,8 +740,6 @@ ss_adults <- data.table::data.table(as.data.frame(adults@colData))
 
 ```
 
-
-
 ```{r}
 table(ss_adults$Type)
 ```
@@ -793,7 +754,7 @@ Thus, we have 2 possible different comparisons. Either we group togehter all the
 
 ### Normalization:
 
-Following the aforementioned paper @Steegenga2014  we now normalize the data using the subset-quantile within array normalization (SWAN) method:
+Following the aforementioned paper @Steegenga2014 we now normalize the data using the subset-quantile within array normalization (SWAN) method:
 
 ```{r}
 #| eval: false
@@ -811,7 +772,7 @@ Since we are interested in age related differences caused by the disease we must
 
 2.  Another option is to add Age as a covariate in the model.
 
-#### Model1: correct for age and use residuals:{#sec-residuals}
+#### Model1: correct for age and use residuals: {#sec-residuals}
 
 ```{r residuals model}
 #| eval: false 
@@ -983,7 +944,6 @@ table(DMPs2$Contrast)
 plotDMP(data.table::as.data.table(DMPs2))
 ```
 
-
 #### Model comparison:
 
 Both models seem to yield very similar results. Let's put it together:
@@ -1003,7 +963,7 @@ There are no significative differences between AMN and the controls, maybe becau
 DMPs2[Contrast == "AMN-CTL.adult",list(probe=rn,chr,pos,Type,Beta_difference=round(diff_meanMeth,2),gene=UCSC_RefGene_Name,UCSC_RefGene_Group,Relation_to_Island) ]
 ```
 
-Nevertheless there are some sites spotted for cAMN vs controls. Furthermore, the number of DMPs is increased for the contrast AMN-cAMN. 
+Nevertheless there are some sites spotted for cAMN vs controls. Furthermore, the number of DMPs is increased for the contrast AMN-cAMN.
 
 ```{r}
 dt2 <- DMPs2[Contrast == "AMN-cAMN",list(probe=rn,Contrast,chr,pos,Type,Beta_difference=round(diff_meanMeth,2),gene=UCSC_RefGene_Name,UCSC_RefGene_Group,Relation_to_Island) ]
@@ -1013,7 +973,6 @@ head(dt2[order(-abs(dt2[["Beta_difference"]]))],20)
 
 As shown in the table above there are much higher differences between the 2 conditions than between either of them with the control. This suggest that rather than having more methylation in the same direction by favouring similar methylation processes there may be different mechanisms involved methylating different sites for AMN and cAMN.
 
-
 And here is a table with top 10 DMP sites for each contrast:
 
 ```{r}
@@ -1022,8 +981,7 @@ dmp10<-dt10[order(-abs(Beta_difference)),head(.SD,10),by=Contrast]
 dtable(dmp10)
 ```
 
-You can take a look at the scatter plots on how do the beta values of each of these `r length(unique(dmp10$probe))` sites change with age here @sec-betas_age_plot 
-
+You can take a look at the scatter plots on how do the beta values of each of these `r length(unique(dmp10$probe))` sites change with age here @sec-betas_age_plot
 
 ### reference vs Adults:
 
@@ -1108,20 +1066,17 @@ per <- Dtab[,c( Common_probes, total,
 per
 ```
 
-
 In general, all the sets perform in a similar way except for the one selecting top5000 DMPs.
 
 The 2 sets that seem to be more enriched for age-related methylation changes are the one based on our own controls `cgIn_top` and the one with no associated expression change `cgIn_NO`. It is not surprising to see that the set of probes based on the differences observed from our own data outperforms the sets coming from other sources.
 
 In respect with the set with no-expression, in the paper they hypothesize that methylation changes uncorrelated with changes in expression may be caused by aging.
 
-
 #### Betas:
 
 Now let's take the beta values in consideration:
 
 ##### Betas residual model:
-
 
 ```{r}
 #| include: false
@@ -1137,7 +1092,6 @@ M2B<-function(x)
 {2^x/(1+2^x)}
 
 ```
-
 
 ```{r betas residual model}
 #| eval: false
@@ -1198,7 +1152,6 @@ lapply(names(probelist),function(n){
 
 ```
 
-
 ```{r betas covariate model}
 #| eval: false
 betas <- M2B(bvals2)
@@ -1243,7 +1196,6 @@ b2_cov<-merge(b2_m,ss_adults[,.SD, .SDcols=c("Sample_Name", "Age","Condition")])
 b2_cov$model="covariate"
 ```
 
-
 ```{r}
 #| eval: false
 # Mean Beta values for the contrasts:
@@ -1279,6 +1231,7 @@ We see that cAMD looks the more extreme
 ##### top10 Beta vs age plot {#sec-betas_age_plot}
 
 Here we inspect the top DMP sites individually. We selected the top 10 DMPs for each of the contrasts:
+
 ```{r}
 table(dmp10$Contrast)
 ```
@@ -1294,7 +1247,6 @@ dt10_p<-dmp10[,list(Contrast=Contrast,cg=probe, Relation_to_Island= Relation_to_
 dtp <-merge(dt_ind_cov[dt10_p$cg,], dt10_p)
 saveRDS(dtp, "data/dtp.rds")
 ```
-
 
 ```{r top_probes_contrast, fig.height=24, dpi=200}
 #| column: page
@@ -1321,8 +1273,6 @@ plt_list_DMP[[cont]]<-ggplot(dtp_c, aes(x = Age, y = bVal, color=Condition, grou
 }
 plt_list_DMP
 ```
-
-
 
 #### Significance test:
 
@@ -1449,9 +1399,7 @@ kableExtra::kbl(ztab)|>kableExtra::kable_classic_2()
 # kableExtra::kbl(z_bimodal[,.SD,.SDcols=c("ref","model","type","estimate","conf.int","p.value")],digits=2) |> kableExtra::kable_classic()
 ```
 
-
-We see there is a small difference in methylation for the dataset cgSetm which combines data that comes from PBMC cells, although that seems to be specially true for the subset with no correlation with expression changes.
-For more information about the pathways associated with the set of methylated genes for each reference set take a look at @sec-inhouseref set 
+We see there is a small difference in methylation for the dataset cgSetm which combines data that comes from PBMC cells, although that seems to be specially true for the subset with no correlation with expression changes. For more information about the pathways associated with the set of methylated genes for each reference set take a look at @sec-inhouseref set
 
 # Question 3: Age signature relataed to the disease
 
@@ -1491,7 +1439,6 @@ disease_dt_path[, type:=ifelse(diff>0,"hyper","hypo")]
 disease_dt_path$ref = "top500_disease"
 ```
 
-
 ```{r}
 disease_dt_path <- disease_dt_path[abs(diff)>0.05,]
 setkey(disease_dt_path,"cg")
@@ -1507,11 +1454,30 @@ pathways_desease <- get_pathway(probeIDs = disease_dt_path[Contrast == "AMN-cAMN
 dtable(pathways_desease$hyper)
 ```
 
-
 ### Hypo pathways:
 
 ```{r}
 dtable(pathways_desease$hypo)
 ```
 
+### DNA methylation & gene expression: {#sec-preprocessing}
 
+450k array where pre-processed and cleaned and the old subjects where compared to the young subjects.
+
+20,917 were significantly regulated (Lima *t* test, *p* \< 0.01) between the group of old and young subjects. Over 5 % methylation difference between the mean of the group of the young and old subjects was found for 10,625. 7,598 gene-related and 3,027 intergenic probes. From the 7,598 gene-related 640 probes where further discarded because of pseudo- and uncharacterized genes, antisense RNAs, long intergenic nonprotein coding RNAs and micro-RNAs.
+
+Finally a clean set of 6958 probes where selected and the most significant differentially expressed genes were identified using −2 \> *t* value \> 2 as a cut-off. Fig 2A
+
+![](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4082572/bin/11357_2014_9648_Fig2_HTML.jpg)
+
+398 genes where selected as the most significant differentially expressed genes and 170 of those have at least 2 associated DMPs.
+
+The following table corresponds to supplementary table 2 and contains the data they usedin the article.
+
+```{r readexcel}
+#| column: page-inset-right
+#| echo: false
+suppressMessages( readxl::read_xls("data/11357_2014_9648_MOESM2_ESM.xls",sheet = 2,skip = 2,))->sup2
+dtable(sup2)
+
+```

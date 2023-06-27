@@ -94,12 +94,13 @@ renderDT<- function(data){
 
 ```
 
-
 # Standard analysis
 
 ## Workflow:
 
-The standard workflow consists of three steps: 1) pre-processing (qc, signal normalization, filtering); 2) differential analysis (DMPs,DMRs) and 3) functional analysis of DMR associated genes (GO, pathways)
+The standard workflow consists of three steps: 1. pre-processing (qc,
+signal normalization, filtering); 2. differential analysis (DMPs,DMRs)
+and 3. functional analysis of DMR associated genes (GO, pathways)
 
 ### 1.Pre-processing:
 
@@ -112,13 +113,14 @@ ss<-readRDS("data/SS.rds")
 ss$age_grp <- "Adult"
 ss[Age < 18, age_grp:="Child"]
 
-``` 
+```
 
 The following filters are applied:
 
-1.  Probes: Only probes with a detection p.value \< 0.01 for each sample
-    are retained. (P-value calculated with `minfi::detectionP()`)
-2.  Sample: Only samples with at least 90% of the probes are retained.
+1.  Probes: Only probes with a signal detection p.value \< 0.01 for each
+    sample are retained. (P-value calculated with `minfi::detectionP()`)
+2.  Sample: Only samples with at least 90% of the probes detected are
+    retained.
 
 After applying these filters one sample was discarded:
 `r ss[Sentrix_ID =="206702460034"&Sentrix_Position=="R05C01",.(Sample_Name,Condition,Age)]`
@@ -129,25 +131,30 @@ ss <- ss[Sample_Name != "lnf-21.5",]
 
 #### Background correction and signal normalization:
 
-Raw signal is normalized. The `preprocessNoob` function from `minfi` package is used to remove background noise and a
-visual inspection of the data is done [raw-qc](standard.qmd#sec-qc). Signal normalization with ssNoob.
+Raw signal is normalized. The `preprocessNoob` function from `minfi`
+package is used to remove background noise and a visual inspection of
+the data is done [raw-qc](standard.qmd#sec-qc). Signal normalization
+with ssNoob.
 
 #### Filtering:
 
-Known cross-reactive probes and SNP are filtered out.
-
+Known cross-reactive probes and SNPs are filtered out.
 
 ### 2.Differential methylation analysis:
 
-Differences in methylation between different groups is analysed using linear regression models. For single probes (DMPs) we use the limma package, for regions of adjacent probes we use DMRcate (also rliear regression based). 
+Differences in methylation between different groups are analysed using
+linear regression models. For single probes (DMPs) we use the limma
+package, for regions of adjacent probes we use DMRcate (also linear
+regression based).
 
-To answer the research questions we employ the following models: 
+To answer the research questions we employ the following models:
 
 #### model 1:
 
-Identify methylation change associated with adult XALD.
+=\> Identify methylation change associated with adult XALD.
 
-Only using adult samples we create a variable called `Type` , which contains 2 groups:
+Only using adult samples we create a variable called `Type` , which
+contains 2 groups:
 
 -   disease: AMN and cAMN merged together in a single group.
 
@@ -166,20 +173,24 @@ Formula: meth \~ 0 + AMN_Type
 
 RESULTS:
 
-No difference at probe-level or region level observed.  (pval =?, FDR =?)
+No difference at probe-level or region level observed. (pval =?, FDR =?,
+methylation difference =)
 
 #### model 2:
 
-Are there any methylation changes associated with any of experiment groups such as age or disease phenotype?
+=\> Are there any methylation changes associated with any of the
+experimental groups such as age or disease phenotype?
 
-Combining children and adults we create a `Condition` variable, which contains 5 groups formed by all available
-combinations of disease and age phenotypes:
+Combining children and adults we create a `Condition` variable, which
+contains 5 groups formed by all available combinations of disease and
+age phenotypes:
 
 -   CTL.adult: Control samples for adults
 
 -   CTL.child: Control samples for childs
 
--   AMN: Adults with the disease condition 1
+-   AMN: Adults with the disease condition 1 (?check if this really was
+    included?)
 
 -   cAMN: Adults with the disease condition 1 & condition 2
 
@@ -196,25 +207,30 @@ table(ss[, Condition])
 
 Formula: meth \~ 0 + Condition
 
-**This model was statistically significant (pval =?) for the comparison (contrast) cALD-cAMN identifying 116 differentially methylated probes (DMPs).** 
+RESULTS
 
-No differentially methylated regions (DMRs) could be identified (FDR, meth difference ?).
+**This model was statistically significant (pval =?) for the comparison
+(contrast) cALD-cAMN identifying 116 differentially methylated probes
+(DMPs) (methylation difference =).**
 
+However, no differentially methylated regions (DMRs) could be identified
+(FDR, meth difference ?).
 
 #### model 3
 
-Aside from age (0-82 years) associated, are there any specific methylation changes associated with any of the experimental groups?
+=\> Aside from age (0-82 years) related, are there any specific
+methylation changes associated with any of the experimental groups?
 
-model 3 = m2 + Age as a covariate
+model 3 = m2 + Age as a covariate \
 Formula: meth \~ 0 + Condition + Age
 
 No difference at probe-level or region level observed.
 
+### 3. Pathway analysis {#sec-pathway}
 
-### 3. Pathway analysis{#sec-pathway}
-
-There were only significant results for model 2 at individual probe
-level:
+The 116 DMPs (XX hypo, XX hyper) between cALD and cAMN (model 2) were
+associated with XXX and XXX genes, respectively. For those genes we
+performed gene set enrichment analysis:
 
 ![Pathway analysis from genes associated to DMPs in model 2 (meth \~ 0 +
 Condition).](data/pathways_m2_camd-cald.png){alt="Pathway analysis from genes associated to DMPs in model 2."}
@@ -222,18 +238,31 @@ Condition).](data/pathways_m2_camd-cald.png){alt="Pathway analysis from genes as
 ## Discussion
 
 We performed a [Standard methylation
-analysis](standard.qmd#sec-workflow), following our standard.
+analysis](standard.qmd#sec-workflow), following our standard analysis
+workflow.
 
-Within the adult group we don't detect significant difference between controls and disease. Incoorporating children samples, we observe few differences between children and adults with cerebralALD/AMN
-but none in the other age~phonotype comparisons. Correcting for age (as a continous variable) in the analysis, confirms age as the dominating factors.
+Within the adult group we don't detect significant difference between
+controls and disease. Incorporating children samples, we observe few
+differences between children and adults with cerebral ALD/AMN but none
+in the other age\~phenotype comparisons. Correcting for age (as a
+continous variable) in the analysis, confirms age as the dominating
+factors.
 
-Nevertheless, the amount of changes related to age in XALD where much less than expected from previous studies.
+Nevertheless, the amount of changes related to age in XALD where much
+less than expected from previous studies (communication with
+colaborator).
 
-For this reason (and to further study the pattern of age related changes) we propose alternative approaches:
+For this reason (and to further study the pattern of age related
+changes) we propose alternative approaches:
 
-1.  Genereate a [regression model with age-corrected ](signature.qmd#sec-residuals) beta values, to remove the effect of age from
-    the methylation values.
-2.  Look for specific age signature in our data by predicting [age-related sites within the controls](signature.qmd#sec-inhouseref) and checking for enrichment of those sites in the disease.
-3.  Analysing [previously reported age-related sites](signature.qmd#sec-PBMC) from literature.    
-4.  Reproducing [age-acceleration analysis](horvath.qmd) from existing literature.
-
+1.  Genereate a [regression model with
+    age-corrected](signature.qmd#sec-residuals) beta values, to remove
+    the effect of age from the methylation values.
+2.  Look for specific age signature in our data by predicting
+    [age-related sites within the
+    controls](signature.qmd#sec-inhouseref) and checking for enrichment
+    of those sites in the disease.
+3.  Analysing [previously reported age-related
+    sites](signature.qmd#sec-PBMC) from literature.\
+4.  Reproducing [age-acceleration analysis](horvath.qmd) from existing
+    literature.
