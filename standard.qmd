@@ -105,6 +105,15 @@ The standard workflow consists of three steps: 1) pre-processing (qc, signal nor
 
 #### Data QC:
 
+```{r}
+source("R/functions.R")
+library(data.table)
+ss<-readRDS("data/SS.rds")
+ss$age_grp <- "Adult"
+ss[Age < 18, age_grp:="Child"]
+
+``` 
+
 The following filters are applied:
 
 1.  Probes: Only probes with a detection p.value \< 0.01 for each sample
@@ -117,6 +126,7 @@ After applying these filters one sample was discarded:
 ```{r}
 ss <- ss[Sample_Name != "lnf-21.5",]
 ```
+
 #### Background correction and signal normalization:
 
 Raw signal is normalized. The `preprocessNoob` function from `minfi` package is used to remove background noise and a
