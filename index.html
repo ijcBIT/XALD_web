@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.247">
+<meta name="generator" content="quarto-1.3.433">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>XALD Methylation array analysis - XALD Methylation Project</title>
+<title>XALD Methylation array analysis - XALD epigenic landscape</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -57,7 +91,8 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -73,10 +108,10 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">XALD Methylation Project</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">XALD epigenic landscape</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -90,8 +125,8 @@ ul.task-list li input[type="checkbox"] {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">XALD Methylation array analysis</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://www.carrerasresearch.org/en/bioinformatics-unit_130420" title="IJC-BIT" class="quarto-navigation-tool px-1" aria-label="IJC-BIT"><i class="bi bi-globe"></i></a>
-    <a href="https://github.com/ijcBIT/XALD_web" title="XALD" class="quarto-navigation-tool px-1" aria-label="XALD"><i class="bi bi-github"></i></a>
+    <a href="https://www.carrerasresearch.org/en/bioinformatics-unit_130420" rel="" title="IJC-BIT" class="quarto-navigation-tool px-1" aria-label="IJC-BIT"><i class="bi bi-globe"></i></a>
+    <a href="https://github.com/ijcBIT/XALD_web" rel="" title="XALD" class="quarto-navigation-tool px-1" aria-label="XALD"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -106,7 +141,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">XALD Methylation Project</span></a>
+ <span class="menu-text">XALD epigenic landscape</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -149,7 +184,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#xald-project-study-of-methylation-changes-in-age-related-cg-sites-associated-with-xald-disease" id="toc-xald-project-study-of-methylation-changes-in-age-related-cg-sites-associated-with-xald-disease" class="nav-link active" data-scroll-target="#xald-project-study-of-methylation-changes-in-age-related-cg-sites-associated-with-xald-disease">XALD Project: Study of methylation changes in Age-related cg sites associated with XALD disease</a></li>
+  <li><a href="#xald-project-study-age-related-dna-methylation-changes-in-x-linked-adrenoleukodystrophy-xald" id="toc-xald-project-study-age-related-dna-methylation-changes-in-x-linked-adrenoleukodystrophy-xald" class="nav-link active" data-scroll-target="#xald-project-study-age-related-dna-methylation-changes-in-x-linked-adrenoleukodystrophy-xald">XALD Project: Study age-related DNA methylation changes in X-linked Adrenoleukodystrophy (XALD)</a>
+  <ul class="collapse">
+  <li><a href="#study-design" id="toc-study-design" class="nav-link" data-scroll-target="#study-design">Study design</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/ijcBIT/XALD_web/edit/main/index.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/ijcBIT/XALD_web/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -158,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">XALD Methylation Project</h1>
+<h1 class="title">XALD epigenic landscape</h1>
 </div>
 
 
@@ -173,39 +211,36 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="xald-project-study-of-methylation-changes-in-age-related-cg-sites-associated-with-xald-disease" class="level1">
-<h1>XALD Project: Study of methylation changes in Age-related cg sites associated with XALD disease</h1>
-<p>This book is created to give answer to the following questions:</p>
+<section id="xald-project-study-age-related-dna-methylation-changes-in-x-linked-adrenoleukodystrophy-xald" class="level1">
+<h1>XALD Project: Study age-related DNA methylation changes in X-linked Adrenoleukodystrophy (XALD)</h1>
+<p>This report focusses on the following questions:</p>
 <ol type="1">
-<li><p>Is there an age-accelerating factor for XALD patients according to the changes in methylation?</p></li>
-<li><p>Which is the methylation mark associated with XALD disease?</p></li>
+<li><p>Which DNA methylation changes are associated with XALD in adults ?</p></li>
+<li><p>XALD also occurs in children, although with a distinct phenotype. Are there age-related methylation changes associated with XALD and do XALD patients show accelarated aging compared to controls?</p></li>
 </ol>
-<figure id="gr1" class="figure" tabindex="0">
-<img class="b-lazy b-loaded ux-lazyloaded figure-img" loading="lazy" alt="Figure thumbnail gr1" data-locator="undfig1" data-high-res="https://www.cell.com/cms/attachment/2969fef9-12c8-499f-a5ef-45301231fb4d/gr1.jpg" data-large-image="https://www.cell.com/cms/attachment/2969fef9-12c8-499f-a5ef-45301231fb4d/gr1.jpg" src="https://www.cell.com/cms/attachment/2969fef9-12c8-499f-a5ef-45301231fb4d/gr1.jpg">
-<figcaption class="figure-caption">
-<div class="figure__caption__body">
-<div class="figure__title">
-<span class="label figure__label" data-fv-label="Figure"></span><span class="figure__title__text">Image by Kip Lyall.</span>
+<section id="study-design" class="level2">
+<h2 class="anchored" data-anchor-id="study-design">Study design</h2>
+<p>In adults, there are 2 disease phenotypes AMN and cerebral AMN (cAMN), in children only one disease phenotype, cerebral XALD (cALD) [adults &gt;=18 &amp; child &lt;18]. Both, children and adult have a health controls group (CTL).</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/functions.R"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>ss<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">"data/SS.rds"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ss<span class="sc">$</span>age_grp <span class="ot">&lt;-</span> <span class="st">"Adult"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ss[Age <span class="sc">&lt;</span> <span class="dv">18</span>, age_grp<span class="sc">:</span><span class="er">=</span><span class="st">"Child"</span>]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(ss<span class="sc">$</span>age_grp,ss<span class="sc">$</span>Condition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       
+        AMN cALD cAMN CTL.adult CTL.child
+  Adult  52    0    8        12         0
+  Child   0   12    0         0        12</code></pre>
 </div>
-<ul class="rlist--inline separator download-links">
-<li>
-<a target="_blank" href="https://www.cell.com/cms/attachment/2969fef9-12c8-499f-a5ef-45301231fb4d/gr1.jpg" title="View Large Image in a new tab">View Large Image </a>
-</li>
-<li class="download-links__figureViewer">
-<a href="#" class="figure__open__ctrl">Figure Viewer</a>
-</li>
-<li>
-<a href="https://www.cell.com/cms/attachment/2969fef9-12c8-499f-a5ef-45301231fb4d/gr1.jpg" class="download-links__download-Hi-res" target="_blank" download="">Download Hi-res image </a>
-</li>
-<li class="hidden-xs">
-<a href="./action/downloadFigures?pii=S0092-8674(15)00628-5&amp;id=gr1.jpg" class="download-links__download-This">Download (PPT)</a>
-</li>
-</ul>
 </div>
-</figcaption>
-</figure>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

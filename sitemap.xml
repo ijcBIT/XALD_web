@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ijcbit.github.io/XALD_web/horvath.html</loc>
-    <lastmod>2023-06-22T14:29:55.000Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ijcbit.github.io/XALD_web/standard.html</loc>
-    <lastmod>2023-06-22T14:30:03.000Z</lastmod>
+    <loc>https://ijcbit.github.io/XALD_web/signature.html</loc>
+    <lastmod>2023-06-27T15:04:56.063Z</lastmod>
   </url>
   <url>
     <loc>https://ijcbit.github.io/XALD_web/summary.html</loc>
-    <lastmod>2023-06-22T14:30:08.000Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ijcbit.github.io/XALD_web/signature.html</loc>
-    <lastmod>2023-06-22T14:31:30.000Z</lastmod>
+    <lastmod>2023-06-27T15:03:50.627Z</lastmod>
   </url>
   <url>
     <loc>https://ijcbit.github.io/XALD_web/references.html</loc>
-    <lastmod>2023-06-22T14:31:31.000Z</lastmod>
+    <lastmod>2023-06-27T15:03:44.599Z</lastmod>
   </url>
   <url>
     <loc>https://ijcbit.github.io/XALD_web/index.html</loc>
-    <lastmod>2023-06-22T14:31:32.000Z</lastmod>
+    <lastmod>2023-06-27T15:03:42.491Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ijcbit.github.io/XALD_web/horvath.html</loc>
+    <lastmod>2023-06-27T15:03:48.739Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ijcbit.github.io/XALD_web/standard.html</loc>
+    <lastmod>2023-06-27T15:03:53.663Z</lastmod>
   </url>
 </urlset>
