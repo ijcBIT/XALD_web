@@ -27,7 +27,7 @@ From the results of the Epigenetic Age Clock calculator we are going to use the 
   - GrimAge is considered the best mortality predictor available.  Developed by Ake Lu and Steve Horvath. 
   - based on seven DNA methilation estimators of plasma proteins and a DNA methylation estimator of smoking pack-years
 
-3. `AgeAccelPheno` @Levin2018:
+3. `AgeAccelPheno` @Levine2018:
   - PhenoAge morbidity & mortality predictor, developed by Morgan Levine in Steve Horvath's lab. 
   - This biomarker was developed using data from whole blood, it correlates strongly with age in every tissue and cell tested.
 

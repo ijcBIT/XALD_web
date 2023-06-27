@@ -4,14 +4,12 @@ author: "Izar de Villasante"
 format: 
    html:
      df-print: paged
-
 number-sections: true
 crossref:
   chapters: true
 cahce: false
 params:
   ctl_qc_dir: "data/ctl/"
-
 ---
 
 ```{r load packages}

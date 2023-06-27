@@ -45,8 +45,10 @@ format:
       dark: [cosmo, theme-dark.scss]
     code-copy: true
     code-overflow: wrap
+    code-fold: true
     toc: true
-
+bibliography: references.bib  
+suppress-bibliography: false
 filters:
   - include-files.lua
   - quarto
