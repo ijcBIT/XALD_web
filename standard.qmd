@@ -189,32 +189,37 @@ age phenotypes:
 
 -   CTL.child: Control samples for childs
 
--   AMN: Adults with the disease condition 1 (?check if this really was
-    included?)
-
 -   cAMN: Adults with the disease condition 1 & condition 2
 
 -   cALD: Children with the disease condition 2
 
 ```{r}
-dtable(ss[, .(Sample_Name,Condition)])
-
+ss_cereb<-readRDS("data/ss_cereb.rds")
+table(ss_cereb$Condition)
 ```
 
 ```{r}
-table(ss[, Condition])
+dtable(ss_cereb[, .(Sample_Name,Condition)])
+
 ```
 
 Formula: meth \~ 0 + Condition
 
 RESULTS
 
-**This model was statistically significant (pval =?) for the comparison
-(contrast) cALD-cAMN identifying 116 differentially methylated probes
-(DMPs) (methylation difference =).**
+This model was not statistically significant. To look at a resume/description of the results we can take a look at the following plot:
 
-However, no differentially methylated regions (DMRs) could be identified
-(FDR, meth difference ?).
+![Values associated to DMPs in model 2 (meth \~ 0 +
+Condition).](data/dmp_params.png){alt="parameter distribution for DMPs in model 2."}
+
+
+
+<!-- **This model was statistically significant (pval =?) for the comparison -->
+<!-- (contrast) cALD-cAMN identifying 116 differentially methylated probes -->
+<!-- (DMPs) (methylation difference =).** -->
+
+<!-- However, no differentially methylated regions (DMRs) could be identified -->
+<!-- (FDR, meth difference ?). -->
 
 #### model 3
 
@@ -228,12 +233,14 @@ No difference at probe-level or region level observed.
 
 ### 3. Pathway analysis {#sec-pathway}
 
-The 116 DMPs (XX hypo, XX hyper) between cALD and cAMN (model 2) were
-associated with XXX and XXX genes, respectively. For those genes we
-performed gene set enrichment analysis:
+<!-- The 116 DMPs (XX hypo, XX hyper) between cALD and cAMN (model 2) were -->
+<!-- associated with XXX and XXX genes, respectively. For those genes we -->
+<!-- performed gene set enrichment analysis: -->
 
-![Pathway analysis from genes associated to DMPs in model 2 (meth \~ 0 +
-Condition).](data/pathways_m2_camd-cald.png){alt="Pathway analysis from genes associated to DMPs in model 2."}
+<!-- ![Pathway analysis from genes associated to DMPs in model 2 (meth \~ 0 + -->
+<!-- Condition).](data/pathways_m2_camd-cald.png){alt="Pathway analysis from genes associated to DMPs in model 2."} -->
+
+Since no significant result was found with: $\Delta \beta \geq 0.2 \ \& \ p.val < 0.05 $ (beta value mean difference greater or equal to 0.2 and p.value smaller thatn 0.05) In DMPs for any of the contrasts or in DMRs there is no pathway included.
 
 ## Discussion
 
