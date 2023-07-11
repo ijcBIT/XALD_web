@@ -153,8 +153,6 @@ As the difference between XALD age groups where much less then those observed in
 
 ## Reference aging signature: {#sec-PBMC}
 
-0.  Preprocessing:
-
 ## Inhouse data:
 
 ### Load:
