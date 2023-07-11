@@ -98,9 +98,10 @@ renderDT<- function(data){
 
 ## Workflow:
 
-The standard workflow consists of three steps: 1. pre-processing (qc,
-signal normalization, filtering); 2. differential analysis (DMPs,DMRs)
-and 3. functional analysis of DMR associated genes (GO, pathways)
+The standard workflow consists of three steps: 
+1. pre-processing (qc, signal normalization, filtering); 
+2. differential analysis (DMPs,DMRs)
+3. functional analysis of DMR associated genes (GO, pathways)
 
 ### 1.Pre-processing:
 
@@ -173,8 +174,8 @@ Formula: meth \~ 0 + AMN_Type
 
 RESULTS:
 
-No difference at probe-level or region level observed. (pval =?, FDR =?,
-methylation difference =)
+No difference at probe-level or region level observed. (pval = 0.05, FDR =0.05,
+methylation difference = 0.2)
 
 #### model 2:
 
