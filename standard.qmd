@@ -98,9 +98,10 @@ renderDT<- function(data){
 
 ## Workflow:
 
-The standard workflow consists of three steps: 1. pre-processing (qc,
-signal normalization, filtering); 2. differential analysis (DMPs,DMRs)
-and 3. functional analysis of DMR associated genes (GO, pathways)
+The standard workflow consists of three steps: 
+1. pre-processing (qc, signal normalization, filtering); 
+2. differential analysis (DMPs,DMRs) and 
+3. functional analysis of DMR associated genes (GO, pathways)
 
 ### 1.Pre-processing:
 
@@ -221,7 +222,7 @@ However, no differentially methylated regions (DMRs) could be identified
 =\> Aside from age (0-82 years) related, are there any specific
 methylation changes associated with any of the experimental groups?
 
-model 3 = m2 + Age as a covariate \
+model 3 = m2 + Age as a covariate\
 Formula: meth \~ 0 + Condition + Age
 
 No difference at probe-level or region level observed.
