@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.3.247">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -55,7 +55,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -64,8 +83,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./signature.html" rel="next">
-<link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -93,8 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
@@ -130,10 +146,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./standard.html">Standard analysis</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">XALD Methylation array analysis</li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -147,8 +163,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="sidebar-title mb-0 py-0">
       <a href="./">XALD Methylation array analysis</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://www.carrerasresearch.org/en/bioinformatics-unit_130420" rel="" title="IJC-BIT" class="quarto-navigation-tool px-1" aria-label="IJC-BIT"><i class="bi bi-globe"></i></a>
-    <a href="https://github.com/ijcBIT/XALD_web" rel="" title="XALD" class="quarto-navigation-tool px-1" aria-label="XALD"><i class="bi bi-github"></i></a>
+    <a href="https://www.carrerasresearch.org/en/bioinformatics-unit_130420" title="IJC-BIT" class="quarto-navigation-tool px-1" aria-label="IJC-BIT"><i class="bi bi-globe"></i></a>
+    <a href="https://github.com/ijcBIT/XALD_web" title="XALD" class="quarto-navigation-tool px-1" aria-label="XALD"><i class="bi bi-github"></i></a>
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
     </div>
@@ -168,8 +184,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./standard.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Standard analysis</span></a>
+  <a href="./pages/standard/standard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Standard</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -289,43 +305,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="differential-methylation-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="differential-methylation-analysis">2.Differential methylation analysis:</h3>
 <p>Differences in methylation between different groups are analysed using linear regression models. For single probes (DMPs) we use the limma package, for regions of adjacent probes we use DMRcate (also linear regression based).</p>
-<p>To answer the research questions we employ the following models:</p>
-<section id="model-1" class="level4">
-<h4 class="anchored" data-anchor-id="model-1">model 1:</h4>
-<p>=&gt; Identify methylation change associated with adult XALD.</p>
-<p>Only using adult samples we create a variable called <code>Type</code> , which contains 2 groups:</p>
+<section id="parameter-tunning" class="level4">
+<h4 class="anchored" data-anchor-id="parameter-tunning">Parameter tunning:</h4>
+<p>We have modified our standard pipeline in order to apply similar filters as those described in the paper by Steegena et al. <span class="citation" data-cites="Steegenga2014">Steegenga et al. (<a href="#ref-Steegenga2014" role="doc-biblioref">2014</a>)</span> with similar samples.</p>
 <ul>
-<li><p>disease: AMN and cAMN merged together in a single group.</p></li>
-<li><p>controls: the adult controls.</p></li>
+<li><p>∆β &gt; 0.05: Difference in mean beta values between groups of at least 0.05.</p></li>
+<li><p>T &gt; 2 : t-statisitc greater than 2</p></li>
+<li><p>pval &lt; 0.01: P-value smaller than 0.01 in the linear model.</p></li>
+</ul>
+<p>To answer the research questions we employ the following models:</p>
+</section>
+<section id="model-1-m1-datass_adults.rds-0-condition-noob" class="level4">
+<h4 class="anchored" data-anchor-id="model-1-m1-datass_adults.rds-0-condition-noob">model 1: (m1 “data/ss_Adults.rds”, “~0 + Condition”, Noob )</h4>
+<p>=&gt; Identify methylation change associated with adult XALD.</p>
+<p>Only using adult samples we create a variable called <code>Condition</code> , which contains 3 groups:</p>
+<ul>
+<li>CTL.adult: the adult controls</li>
+<li>AMN disease without cerebral condition</li>
+<li>cAMN disease withcerebral condition.</li>
 </ul>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dtable</span>(ss[age_grp<span class="sc">==</span><span class="st">"Adult"</span>, .(Sample_Name,Type)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(ss<span class="sc">$</span>Condition)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-7ea88e22b89a77a1cc56" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-7ea88e22b89a77a1cc56">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"factor\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;Control&quot;,&quot;Disease&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71"],["AMN_PE-005-V1","BAB-1/8-M0","DNA AMCS","DNA CTL-25.2","DNA CTL-35.3","DNA CTL-44.2","DNA CTL-6.5","DNA CTL-61.1","DNA CTL-64.2","DNA CTL-80.1","DNA JCG","DNA JOG","DNA RCP","DNA SPG-102.2","DNA SPG-122.2","E4 EC-007-V1","E4 EC-008-V1","E4 EC-011-V1","E4 EC-013-V1","E4 EC-311-V2","E4 EC-313-V2","E4 PIOBCN-003-M0","EC-001-V4 JOG","EC-002-V1","EC-004-V1","EC-005-V1","EC-006-V1","EC-009-V1","EC-010-V1","EC-0309-M0 es V2","EC-0312-V2","EC-0401-M0","EC-0402-M0","EC-0403-M0","EC-0404-M0","EC-0405-M0","EC-0406-M0","EC-0407-M0","EC-0408-M0","EC-0409-M0","EC-0410-M0","EC-0411-M0","EC-0412-M0","EC-0413-M0","EC-0414-M0","EC-0415-M0","EC-0416-M0","EC-0417-M0","EC-0418-M0","EC-0419-M0","EC-0420-M0","EC-0421-M0","EC-0422-M0","EC-0423-M0","EC-0424-M0","FVF","ILB","JMGM -1","JMGP","JRD","MLB","MVG_post24h","PIOBCN-001-M0","PIOBCN-006-M0-1_de_3","PIOBCN007","PIODON-003-M0","PIODON-004-M0","RCP-2","SGR_post24h","spg-98.2","spg-98.3"],["Disease","Disease","Disease","Control","Control","Control","Control","Control","Control","Control","Disease","Disease","Disease","Control","Control","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Disease","Control","Control"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sample_Name<\/th>\n      <th>Type<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"paging":true,"pageLength":20,"searching":true,"fixedColumns":true,"autoWidth":false,"scrollX":true,"digits":4,"ordering":true,"dom":"Bfrtip","buttons":[{"extend":"collection","text":"download entire dataset","action":"function ( e, dt, node, config ) {\n                                                    Shiny.setInputValue('test', true, {priority: 'event'});\n                                                    }"},"copy","csv","excel"],"class":"display","server":true,"columnDefs":[{"orderable":false,"targets":0}],"order":[],"orderClasses":false,"orderCellsTop":true,"lengthMenu":[10,20,25,50,100]}},"evals":["options.buttons.0.action"],"jsHooks":[]}</script>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+CTL.adult       AMN      cAMN 
+       11        52         8 </code></pre>
 </div>
 </div>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(ss[age_grp<span class="sc">==</span><span class="st">"Adult"</span>, Type])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dtable</span>(ss[, .(Sample_Name,Condition)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Control Disease 
-     11      60 </code></pre>
+<div class="cell-output-display">
+
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-ed4efc8bb6f3c4b55f9a" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ed4efc8bb6f3c4b55f9a">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"factor\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;CTL.adult&quot;,&quot;AMN&quot;,&quot;cAMN&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71"],["AMN_PE-005-V1","BAB-1/8-M0","DNA AMCS","DNA CTL-25.2","DNA CTL-35.3","DNA CTL-44.2","DNA CTL-6.5","DNA CTL-61.1","DNA CTL-64.2","DNA CTL-80.1","DNA JCG","DNA JOG","DNA RCP","DNA SPG-102.2","DNA SPG-122.2","E4 EC-007-V1","E4 EC-008-V1","E4 EC-011-V1","E4 EC-013-V1","E4 EC-311-V2","E4 EC-313-V2","E4 PIOBCN-003-M0","EC-001-V4 JOG","EC-002-V1","EC-004-V1","EC-005-V1","EC-006-V1","EC-009-V1","EC-010-V1","EC-0309-M0 es V2","EC-0312-V2","EC-0401-M0","EC-0402-M0","EC-0403-M0","EC-0404-M0","EC-0405-M0","EC-0406-M0","EC-0407-M0","EC-0408-M0","EC-0409-M0","EC-0410-M0","EC-0411-M0","EC-0412-M0","EC-0413-M0","EC-0414-M0","EC-0415-M0","EC-0416-M0","EC-0417-M0","EC-0418-M0","EC-0419-M0","EC-0420-M0","EC-0421-M0","EC-0422-M0","EC-0423-M0","EC-0424-M0","FVF","ILB","JMGM -1","JMGP","JRD","MLB","MVG_post24h","PIOBCN-001-M0","PIOBCN-006-M0-1_de_3","PIOBCN007","PIODON-003-M0","PIODON-004-M0","RCP-2","SGR_post24h","spg-98.2","spg-98.3"],["AMN","AMN","cAMN","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","cAMN","cAMN","cAMN","CTL.adult","CTL.adult","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","cAMN","AMN","cAMN","cAMN","cAMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","CTL.adult","CTL.adult"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sample_Name<\/th>\n      <th>Condition<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"paging":true,"pageLength":20,"searching":true,"fixedColumns":true,"autoWidth":false,"scrollX":true,"digits":4,"ordering":true,"dom":"Bfrtip","buttons":[{"extend":"collection","text":"download entire dataset","action":"function ( e, dt, node, config ) {\n                                                    Shiny.setInputValue('test', true, {priority: 'event'});\n                                                    }"},"copy","csv","excel"],"class":"display","server":true,"columnDefs":[{"orderable":false,"targets":0}],"order":[],"orderClasses":false,"orderCellsTop":true,"lengthMenu":[10,20,25,50,100]}},"evals":["options.buttons.0.action"],"jsHooks":[]}</script>
 </div>
 </div>
-<p>Formula: meth ~ 0 + AMN_Type</p>
+<p>Formula: meth ~ 0 + Condition</p>
 <p>RESULTS:</p>
 <p>No difference at probe-level or region level observed. (pval =?, FDR =?, methylation difference =)</p>
 </section>
-<section id="model-2" class="level4">
-<h4 class="anchored" data-anchor-id="model-2">model 2:</h4>
+<section id="model-2-m2-datass.rds-0-condition-noob" class="level4">
+<h4 class="anchored" data-anchor-id="model-2-m2-datass.rds-0-condition-noob">model 2: (m2 “data/SS.rds”, “~0 + Condition”, Noob )</h4>
 <p>=&gt; Are there any methylation changes associated with any of the experimental groups such as age or disease phenotype?</p>
 <p>Combining children and adults we create a <code>Condition</code> variable, which contains 5 groups formed by all available combinations of disease and age phenotypes:</p>
 <ul>
@@ -342,8 +368,8 @@ Control Disease
 </details>
 <div class="cell-output-display">
 
-<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-d90d7c2916c9d092b40b" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-d90d7c2916c9d092b40b">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"factor\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;AMN&quot;,&quot;cALD&quot;,&quot;cAMN&quot;,&quot;CTL.adult&quot;,&quot;CTL.child&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95"],["AM-M0-FINGO","AMN_PE-005-V1","BAB-1/8-M0","DAM-m9","DNA AMCS","DNA CTL-101.1","DNA CTL-102.1","DNA CTL-25.2","DNA CTL-35.3","DNA CTL-44.2","DNA CTL-6.5","DNA CTL-61.1","DNA CTL-64.2","DNA CTL-80.1","DNA CTL-88.1","DNA CTL-89.1","DNA CTL-90.1","DNA CTL-93.1","DNA CTL-94.1","DNA CTL-95.1","DNA JCG","DNA JMRC","DNA JOG","DNA LNF-64.1","DNA MAMM","DNA RCP","DNA SPG-102.2","DNA SPG-120.3","DNA SPG-122.2","DNA SPG-176.2","E4 EC-007-V1","E4 EC-008-V1","E4 EC-011-V1","E4 EC-013-V1","E4 EC-311-V2","E4 EC-313-V2","E4 PIOBCN-003-M0","EC-001-V4 JOG","EC-002-V1","EC-004-V1","EC-005-V1","EC-006-V1","EC-009-V1","EC-010-V1","EC-0309-M0 es V2","EC-0312-V2","EC-0401-M0","EC-0402-M0","EC-0403-M0","EC-0404-M0","EC-0405-M0","EC-0406-M0","EC-0407-M0","EC-0408-M0","EC-0409-M0","EC-0410-M0","EC-0411-M0","EC-0412-M0","EC-0413-M0","EC-0414-M0","EC-0415-M0","EC-0416-M0","EC-0417-M0","EC-0418-M0","EC-0419-M0","EC-0420-M0","EC-0421-M0","EC-0422-M0","EC-0423-M0","EC-0424-M0","FJGR-2","FVF","ILB","ISGV","JMGM -1","JMGP","JRD","JRM-2","KLB","Köhler 1","Köhler 2","MAMO","MLB","MRR pre-transplante","MVG_post24h","PIOBCN-001-M0","PIOBCN-006-M0-1_de_3","PIOBCN007","PIODON-003-M0","PIODON-004-M0","RCP-2","SGR_post24h","spg-98.2","spg-98.3","spg-98.4"],["cALD","AMN","AMN","cALD","cAMN","CTL.child","CTL.child","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.child","CTL.child","CTL.child","CTL.child","CTL.child","CTL.child","cAMN","cALD","cAMN","CTL.child","cALD","cAMN","CTL.adult","CTL.child","CTL.adult","CTL.child","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","cALD","cAMN","AMN","cALD","cAMN","cAMN","cAMN","cALD","cALD","cALD","cALD","cALD","AMN","cALD","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","CTL.adult","CTL.adult","CTL.child"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sample_Name<\/th>\n      <th>Condition<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"paging":true,"pageLength":20,"searching":true,"fixedColumns":true,"autoWidth":false,"scrollX":true,"digits":4,"ordering":true,"dom":"Bfrtip","buttons":[{"extend":"collection","text":"download entire dataset","action":"function ( e, dt, node, config ) {\n                                                    Shiny.setInputValue('test', true, {priority: 'event'});\n                                                    }"},"copy","csv","excel"],"class":"display","server":true,"columnDefs":[{"orderable":false,"targets":0}],"order":[],"orderClasses":false,"orderCellsTop":true,"lengthMenu":[10,20,25,50,100]}},"evals":["options.buttons.0.action"],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e6f84fb0c22c7bb8a997" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e6f84fb0c22c7bb8a997">{"x":{"filter":"top","vertical":false,"filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"factor\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;CTL.adult&quot;,&quot;AMN&quot;,&quot;cAMN&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons"],"fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71"],["AMN_PE-005-V1","BAB-1/8-M0","DNA AMCS","DNA CTL-25.2","DNA CTL-35.3","DNA CTL-44.2","DNA CTL-6.5","DNA CTL-61.1","DNA CTL-64.2","DNA CTL-80.1","DNA JCG","DNA JOG","DNA RCP","DNA SPG-102.2","DNA SPG-122.2","E4 EC-007-V1","E4 EC-008-V1","E4 EC-011-V1","E4 EC-013-V1","E4 EC-311-V2","E4 EC-313-V2","E4 PIOBCN-003-M0","EC-001-V4 JOG","EC-002-V1","EC-004-V1","EC-005-V1","EC-006-V1","EC-009-V1","EC-010-V1","EC-0309-M0 es V2","EC-0312-V2","EC-0401-M0","EC-0402-M0","EC-0403-M0","EC-0404-M0","EC-0405-M0","EC-0406-M0","EC-0407-M0","EC-0408-M0","EC-0409-M0","EC-0410-M0","EC-0411-M0","EC-0412-M0","EC-0413-M0","EC-0414-M0","EC-0415-M0","EC-0416-M0","EC-0417-M0","EC-0418-M0","EC-0419-M0","EC-0420-M0","EC-0421-M0","EC-0422-M0","EC-0423-M0","EC-0424-M0","FVF","ILB","JMGM -1","JMGP","JRD","MLB","MVG_post24h","PIOBCN-001-M0","PIOBCN-006-M0-1_de_3","PIOBCN007","PIODON-003-M0","PIODON-004-M0","RCP-2","SGR_post24h","spg-98.2","spg-98.3"],["AMN","AMN","cAMN","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","CTL.adult","cAMN","cAMN","cAMN","CTL.adult","CTL.adult","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","cAMN","AMN","cAMN","cAMN","cAMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","AMN","CTL.adult","CTL.adult"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sample_Name<\/th>\n      <th>Condition<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"paging":true,"pageLength":20,"searching":true,"fixedColumns":true,"autoWidth":false,"scrollX":true,"digits":4,"ordering":true,"dom":"Bfrtip","buttons":[{"extend":"collection","text":"download entire dataset","action":"function ( e, dt, node, config ) {\n                                                    Shiny.setInputValue('test', true, {priority: 'event'});\n                                                    }"},"copy","csv","excel"],"class":"display","server":true,"columnDefs":[{"orderable":false,"targets":0}],"order":[],"orderClasses":false,"orderCellsTop":true,"lengthMenu":[10,20,25,50,100]}},"evals":["options.buttons.0.action"],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="cell">
@@ -353,8 +379,8 @@ Control Disease
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-      AMN      cALD      cAMN CTL.adult CTL.child 
-       52        12         8        11        12 </code></pre>
+CTL.adult       AMN      cAMN 
+       11        52         8 </code></pre>
 </div>
 </div>
 <p>Formula: meth ~ 0 + Condition</p>
@@ -362,8 +388,8 @@ Control Disease
 <p><strong>This model was statistically significant (pval =?) for the comparison (contrast) cALD-cAMN identifying 116 differentially methylated probes (DMPs) (methylation difference =).</strong></p>
 <p>However, no differentially methylated regions (DMRs) could be identified (FDR, meth difference ?).</p>
 </section>
-<section id="model-3" class="level4">
-<h4 class="anchored" data-anchor-id="model-3">model 3</h4>
+<section id="model-3-m4-datass.rds-0-condition-age-noob" class="level4">
+<h4 class="anchored" data-anchor-id="model-3-m4-datass.rds-0-condition-age-noob">model 3 (m4 “data/SS.rds”, “~0 + Condition + Age”, Noob )</h4>
 <p>=&gt; Aside from age (0-82 years) related, are there any specific methylation changes associated with any of the experimental groups?</p>
 <p>model 3 = m2 + Age as a covariate<br>
 Formula: meth ~ 0 + Condition + Age</p>
@@ -376,7 +402,7 @@ Formula: meth ~ 0 + Condition + Age</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="data/pathways_m2_camd-cald.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Pathway analysis from genes associated to DMPs in model 2.</figcaption>
+<p></p><figcaption class="figure-caption">Pathway analysis from genes associated to DMPs in model 2.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -396,10 +422,15 @@ Formula: meth ~ 0 + Condition + Age</p>
 </ol>
 
 
+
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Steegenga2014" class="csl-entry" role="listitem">
+Steegenga, Wilma T., Mark V. Boekschoten, Carolien Lute, Guido J. Hooiveld, Philip J. De Groot, Tiffany J. Morris, Andrew E. Teschendorff, Lee M. Butcher, Stephan Beck, and Michael Müller. 2014. <span>“Genome-Wide Age-Related Changes in DNA Methylation and Gene Expression in Human PBMCs.”</span> <em>Age</em> 36: 1523–40. <a href="https://doi.org/10.1007/S11357-014-9648-X">https://doi.org/10.1007/S11357-014-9648-X</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -748,18 +779,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">XALD epigenic landscape</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="./signature.html" class="pagination-link">
-        <span class="nav-page-text">age signature</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
