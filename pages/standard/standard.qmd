@@ -578,13 +578,13 @@ dtable(pathway_dmps_m3)
 ss<-readRDS("data/SS.rds")
 ```
 
-**Model4** is a simplification model where we compare all controls against all cases without considering different disease phenotypes or age groups.
+**Model4** is a simplified model where we compare all controls against all cases without considering different disease phenotypes or age groups.
 We also correct for age here in order to remove Age effects on methylation changes.
 The variable of interest is named `Type` and has only two categories:
 
--   Control: Healthy samples both for pediatric and adult samples.
+- Control: Healthy pediatric and adult samples.
 
--   Disease: Samples with disease phenotype.
+- Disease: Pediatric and adult samples with disease phenotype.
 
 The distribution of samples in each group is shown in the following
 table:
@@ -638,7 +638,7 @@ From the plots above we can see:
 - less difference observed than in the specific comparisons (likely due to higher hetherogenity in the data)
 - hypomethylation in the disease
 
-Bear in mind that the balance between AMN and cerebral condition is uneven, therefore the effect of XALD prevails.
+Note that the non-cerebral disease sample group (N= `r sum(ss$Condition == "AMN")`) is much larger than the cerebral disease group (N = `r sum(ss$Condition %in% c("cAMN","cALD"))`),  therefore, therefore the effect of XALD prevails.
 
 ```{r}
 ss[,.("Controls"=sum(Condition %like% "CTL"),"Cerebral ( cAMN & cALD )"=sum(Condition %in% c("cAMN","cALD")),"Non_cerebral ( AMN )"=sum(Condition == "AMN"))] |>kableExtra::kable()
