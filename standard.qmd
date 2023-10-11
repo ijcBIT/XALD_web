@@ -148,36 +148,61 @@ linear regression models. For single probes (DMPs) we use the limma
 package, for regions of adjacent probes we use DMRcate (also linear
 regression based).
 
+#### Parameter tunning:
+
+We have modified our standard pipeline in order to apply similar filters as those described in the paper by Steegena et al. @Steegenga2014 with similar samples.
+
+-   ∆β > 0.05: Difference in mean beta values between groups of at least 0.05.
+
+-   T > 2 : t-statisitc greater than 2
+
+-   pval < 0.01: P-value smaller than 0.01 in the linear model.
+
+
+
 To answer the research questions we employ the following models:
 
-#### model 1:
+#### model 1: (m1 "data/ss_Adults.rds", "~0 + Condition", Noob )
+
+```{r}
+#| include: false
+
+ss<-readRDS("data/ss_Adults.rds")
+```
+
 
 =\> Identify methylation change associated with adult XALD.
 
-Only using adult samples we create a variable called `Type` , which
-contains 2 groups:
+Only using adult samples we create a variable called `Condition` , which
+contains 3 groups:
 
--   disease: AMN and cAMN merged together in a single group.
-
--   controls: the adult controls.
+-   CTL.adult: the adult controls
+-   AMN disease without cerebral condition
+-   cAMN disease withcerebral condition.
 
 ```{r}
-dtable(ss[age_grp=="Adult", .(Sample_Name,Type)])
-
+table(ss$Condition)
 ```
 
 ```{r}
-table(ss[age_grp=="Adult", Type])
+dtable(ss[, .(Sample_Name,Condition)])
 ```
 
-Formula: meth \~ 0 + AMN_Type
+
+Formula: meth \~ 0 + Condition
+
 
 RESULTS:
+
+```{r}
+
+```
+
 
 No difference at probe-level or region level observed. (pval =?, FDR =?,
 methylation difference =)
 
-#### model 2:
+#### model 2: (m2 "data/SS.rds", "~0 + Condition", Noob )
 
 =\> Are there any methylation changes associated with any of the
 experimental groups such as age or disease phenotype?
@@ -217,7 +242,7 @@ RESULTS
 However, no differentially methylated regions (DMRs) could be identified
 (FDR, meth difference ?).
 
-#### model 3
+#### model 3 (m4 "data/SS.rds", "~0 + Condition + Age", Noob )
 
 =\> Aside from age (0-82 years) related, are there any specific
 methylation changes associated with any of the experimental groups?

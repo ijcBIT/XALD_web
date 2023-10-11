@@ -1,0 +1,700 @@
+---
+title: "Standard analysis"
+author: "Izar de Villasante"
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r dtable}
+#| include: false
+#| eval: true
+dtable<-function(data){
+  DT::datatable(
+        { data},
+        filter = 'top',
+        # selection = list(mode = 'multiple', selected = c(1:10), target = 'column', selectable = c(-2, -3)),
+        fillContainer = F,
+        # style =  "bootstrap",
+
+        extensions = 'Buttons',
+
+        options = list(
+          paging = TRUE,
+          pageLength = 20,
+          searching = TRUE,
+          fixedColumns = TRUE,
+          autoWidth = FALSE,
+          scrollX=TRUE,
+          digits=4,
+          ordering = TRUE,
+          dom = 'Bfrtip',
+          buttons = list(
+            list(
+              extend = "collection",
+              text = 'download entire dataset',
+              action = DT::JS("function ( e, dt, node, config ) {
+                                                    Shiny.setInputValue('test', true, {priority: 'event'});
+                                                    }")
+            ),
+            'copy',
+            'csv',
+            'excel'
+          ),
+
+          class = "display",
+          server=TRUE
+        ),
+      ) |> DT::formatRound(which(sapply(data,is.double)),4)
+}
+```
+
+```{r}
+#| include: false
+#| eval: true
+#| context: server
+myModal <- function() {
+
+  div(id = "test",
+      shiny::modalDialog(downloadButton("download1","Download data as csv"),
+                         br(),
+                         br(),
+                         downloadButton("download2","Download data as excel"),
+                         easyClose = TRUE, title = "Download Table")
+  )
+}
+
+renderDT<- function(data){
+  output$dtable <- DT::renderDataTable({
+    dtable(data)
+  })
+  
+
+    shiny::observeEvent(input$test, {
+      print("hello")
+      showModal(myModal())
+    })
+    output$download1 <- shiny::downloadHandler(
+      filename = function() {
+        paste("data-", Sys.Date(), ".csv", sep="")
+      },
+      content = function(file) {
+        write.csv(data, file)
+      }
+    )
+
+    output$download2 <- shiny::downloadHandler(
+      filename = function() {
+        paste("data-", Sys.Date(), ".xlsx", sep="")
+      },
+      content = function(file) {
+        writexl::write_xlsx(data, file)
+      })
+}
+
+```
+
+## Intro: {#sec-intro}
+
+The standard workflow consists of three steps: 1. pre-processing (qc,
+signal normalization, filtering); 2. differential analysis (DMPs,DMRs)
+and 3. functional analysis of DMR associated genes (GO, pathways)
+
+## 1.Pre-processing: {#sec-Prep}
+
+### Data QC: {#sec-qc}
+
+```{r}
+library(data.table)
+ss<-readRDS("data/SS.rds")
+
+
+```
+
+The following filters are applied:
+
+1.  Probes: Only probes with a signal detection p.value \< 0.01 for each
+    sample are retained. (P-value calculated with `minfi::detectionP()`)
+2.  Sample: Only samples with at least 90% of the probes detected are
+    retained.
+
+After applying these filters one sample was discarded `"lnf-21.5"`:
+`r ss[Sentrix_ID =="206702460034"&Sentrix_Position=="R05C01",.(Sample_Name,Condition,Age)]`
+
+```{r}
+ss <- ss[Sample_Name != "lnf-21.5",]
+```
+
+### Background correction and signal normalization: {#sec-norm}
+
+Raw signal is normalized. The `preprocessNoob` function from `minfi`
+package is used to remove background noise and a visual inspection of
+the data is done [raw-qc](standard.qmd#sec-qc). Signal normalization
+with ssNoob.
+
+#### Filtering:
+
+Known cross-reactive probes and SNPs are filtered out.
+
+### Parameter tunning: {#sec-params}
+
+We have modified our standard pipeline in order to apply similar filters
+as those described in the paper by @Steegenga2014 with similar samples.
+
+-   ∆β \> 0.05: Difference in mean beta values between groups of at
+    least 0.05.
+
+-   T \> 2 : t-statisitc greater than 2
+
+-   pval \< 0.01: P-value smaller than 0.01 in the linear model.
+
+## 2.Differential methylation analysis: {#sec-DM}
+
+Differences in methylation between different groups are analysed using
+linear regression models. For single probes (DMPs) we use the limma
+package, for regions of adjacent probes we use DMRcate (also linear
+regression based).
+
+### **Model 1:** {#sec-Model1}
+
+#### Formula: meth \~ 0 + Condition
+
+First we want to investigate the relationship between methylation
+changes and disease within the **adult** age group.
+
+```{r}
+#| include: false
+
+ss<-readRDS("data/ss_Adults.rds")
+```
+
+Only using adult samples we create a variable called `Condition` , which
+contains 3 groups:
+
+-   CTL.adult: the adult controls
+-   AMN disease without cerebral condition
+-   cAMN disease withcerebral condition.
+
+The distribution of samples in each group is shown in the following
+table:
+
+```{r}
+
+#| label: tbl-Adults-condition
+#| tbl-cap: Disease condition for adults
+ss[,.(Freq=.N),by=Condition]|>kableExtra::kable()
+```
+
+You can also inspect the full interactive sample sheet:
+
+```{r}
+dtable(ss[, .(Sample_Name,barcode,Condition)])
+```
+
+
+
+#### Differentially methylated counts (DMPs)
+
+```{r}
+#| eval: false
+#| include: false
+dmps_f_m1 <- readRDS("/ijc/USERS/idevillasante/XALD_web/data/dmps_f_m1.rds")
+dt<-as.data.table(dmps_f_m1)
+dt[Contrast == "AMN-CTL.adult",Contrast:= "CTL.adult-AMN"]
+dt[Contrast == "CTL.adult-AMN",diff_meanMeth:=-diff_meanMeth]
+dt[Contrast == "CTL.adult-AMN",t:=-t]
+dt[Contrast == "CTL.adult-AMN",logFC:=-logFC]
+plotDMP(dt,path="plots/m1")
+```
+
+::: {#fig-dmps-m1 layout-nrow=2 layout-ncol=2}
+
+![DMPs count](plots/m1/DMP_count.png){#fig-dmp-count-m1}
+
+![DMPs count Hyper/Hypo](plots/m1/DMP_count_facet.png){#fig-dmp-facet-m1}
+
+![CGI annotation](plots/m1/DMP_annCGI.png){#fig-dmp-cgi-m1}
+
+![Genomic annotation](plots/m1/DMP_annGenomic.png){#fig-dmp-Genomic-m1}
+
+Differentially Methylated Probes (DMPs) counts & annotation for Model 1
+:::
+
+From the plots abovewe can see:
+
+-   Significant differences between controls and disease found, mainly
+    hypomethylation in disease
+
+-   More differences between controls and AMN than Control and cAMN
+
+-   Only small differences detected between disease subtypes.
+
+#### Differentially Methylated Regions (DMRs)
+
+There was no region found to be differentially methylated with the
+following parameters:
+
+-   mDiff \> 0.05 a mean difference of at least 0.05 beta value between
+    the groups in the comparison
+
+-   FDR \< 0.01. The FDR score must be smaller than 0.01.
+
+-   min.cpgs \> 2. At least 3 cpgs in the nearby window must be
+    differentially methylated.
+
+#### Pathway analysis
+
+The following table contains the results of the pathway enrichment
+analysis on genes associated with DMPs:
+
+```{r}
+pathway_dmps_m1<- readRDS("data/m1_dmp_pathways.rds")
+dtable(pathway_dmps_m1)
+```
+
+### **Model 2:** {#sec-Model2}
+
+#### Formula: meth \~ 0 + Condition
+
+Now we want to investigate differences in methylation between disease
+and control cases including children.
+
+```{r}
+#| include: false
+
+ss<-readRDS("data/SS.rds")
+```
+
+For that, we have combined the age group (child / adult) samples and
+disease phenotype (control, cerebral and non-cerebral)
+(CTL,cAMN,cALD,AMN) into a single variable `Condition`:
+
+-   **CTL.adult**: Control samples for adults
+
+-   **CTL.child**: Control samples for children
+
+-   **AMN**: Adults with the non-cerebral disease condition
+
+-   **cAMN**: Adults with cerebral disease condition
+
+-   **cALD**: Children with cerebral disease condition
+
+The distribution of samples for each group is shown in the following
+table:
+
+```{r}
+
+#| label: tbl-full-condition
+#| tbl-cap: Disease condition 
+ss[,.(Freq=.N),by=Condition]|>kableExtra::kable()
+```
+
+You can also inspect the full interactive sample sheet:
+
+```{r}
+dtable(ss[, .(Sample_Name,barcode,Condition)])
+```
+
+#### Differentially methylated counts (DMPs)
+
+```{r}
+#| eval: true
+#| include: false
+dmps_f_m2 <- readRDS("data/dmps_f_m2.rds")
+dt<-as.data.table(dmps_f_m2)
+dt[Contrast == "AMN-CTL.adult",Contrast:= "CTL.adult-AMN"]
+dt[Contrast == "CTL.adult-AMN",diff_meanMeth:=-diff_meanMeth]
+dt[Contrast == "CTL.adult-AMN",t:=-t]
+dt[Contrast == "CTL.adult-AMN",logFC:=-logFC]
+dt<-dt[Contrast %in% c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN")]
+dt[,Contrast:=factor(Contrast,levels = c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN"))]
+```
+
+```{r}
+#| eval: false
+#| include: false
+plotDMP(dt,path="plots/m2")
+```
+
+::: {#fig-dmps-m2 layout-nrow=2 layout-ncol=2}
+
+![DMPs count](plots/m2/DMP_count.png){#fig-dmp-count-m2}
+
+![DMPs count Hyper/Hypo](plots/m2/DMP_count_facet.png){#fig-dmp-facet-m2}
+
+![CGI annotation](plots/m2/DMP_annCGI.png){#fig-dmp-cgi-m2}
+
+![Genomic annotation](plots/m2/DMP_annGenomic.png){#fig-dmp-Genomic-m2}
+
+Differentially Methylated Probes (DMPs) counts & annotation for Model 2
+:::
+
+Let's split this into 3 groups showing controls, ctl vs disease and
+Disease:
+
+```{r}
+library(ggplot2)
+library(data.table)
+dt[,gr:=factor(
+  ifelse(
+    Contrast %like% "CTL",
+    ifelse(Contrast == "CTL.child-CTL.adult",
+           "Controls",
+           "Ctl vs disease"),
+    "Disease"))]
+hyper<-dt[,.(Freq=sum(Type=="Hyper"),Type="Hyper"),by=c("Contrast","gr")]
+hypo<-dt[,.(Freq=sum(Type=="Hypo"),Type="Hypo"),by=c("Contrast","gr")]
+DMPresults <- rbind(hyper,hypo)
+
+# plot DMPs (hypo/hyper)
+gr_p1<-ggplot2::ggplot(DMPresults, aes(Contrast, Freq, fill = Type,color=gr)) +
+  geom_bar(position="dodge", stat= "identity",size=1)+
+  # geom_text(aes(label=ifelse(Type == "Hypo", as.character(gr),""), vjust=-1.9)) +
+  geom_text(aes(label = Freq),vjust = -0.5,position=position_dodge(.9))+  
+  scale_color_manual(values=c("#E1B930","#3c8f43", "#395260"))+
+  theme_bw()+
+  scale_fill_manual(values=c("red", "skyblue")) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        strip.text.x = element_text(size = 12))+
+  labs(x = "", y = "count", fill='Methylation')+
+  ggtitle('Differently methylated probes across age groups')+
+  facet_grid(.~factor(gr),scales = "free_x",space="free",)  
+gr_p1
+```
+
+From the plots, the following observations can be made:
+
+1.  **Age-Related Methylation Changes**:
+    -   Substantial alterations in DNA methylation patterns are evident
+        when comparing different age groups both for the controls
+        (`CTL.child` vs `CTL.adult`) as well as for the disease
+        phenotypes (`cALD` vs `cAMN`) with a trend to
+        **hypomethylation** in the adult cohort.
+2.  **Disease-Related Methylation Differences**:
+    -   Distinct patterns of methylation variations are observed between
+        the pediatric and adult cohorts afflicted with the disease.
+    -   Cerebral condition (`cAMN` & `cALD`) show higher changes in
+        methylation than `AMN` with respect to the controls.
+    -   In the *cerebral* conditions, (`cAMN` & `cALD`), we observe a
+        trend to **hypermethylation** compared to healthy controls,
+        whereas in the *non-cerebral* disease condition (`AMN`) we
+        observe **hypomethylation** when compared to controls.
+        (specifically in children).
+    -   Few changes are observed within the adult cohort between the two
+        disease phenotypes.
+
+#### Differentially Methylated Regions (DMRs)
+
+There was no region found to be differentially methylated with the
+following parameters:
+
+-   mDiff \> 0.05 a mean difference of at least 0.05 beta value between
+    the groups in the comparison
+
+-   FDR \< 0.01. The FDR score must be smaller than 0.01.
+
+-   min.cpgs \> 2. At least 3 cpgs in the nearby window must be
+    differentially methylated.
+
+#### Pathway analysis
+
+The following table contains the results of the pathway enrichment
+analysis on DMPs:
+
+```{r}
+pathway_dmps_m2<- readRDS("data/dmp_pathways_m2.rds")
+dtable(pathway_dmps_m2)
+```
+
+Next, we wanted to know to what extent can the observed methylation
+changes be attributed to the factor of age?
+
+<!-- In addition to being an important biological factor, there is also an imbalance in the distribution of age within the different groups.  -->
+
+<!-- In the following table we can observe that the average age by group -->
+
+<!-- ```{r} -->
+
+<!-- unique(ss[,avAge,by=Condition]) -->
+
+<!-- ``` -->
+
+<!-- is not balanced, which in turn makes age contribution to methylation changes to be unbalanced among comparisons: -->
+
+<!-- Moreover, it is essential to explore the degree to which the effect of age might mask the influence of the underlying disease.  -->
+
+### **Model 3:** {#sec-Model3}
+
+#### Formula: meth \~ 0 + Condition + Age
+
+```{r}
+#| include: false
+
+ss<-readRDS("data/SS.rds")
+```
+
+Model3 is an extension of the previous model @sec-Model2 which combines age
+groups and disease phenotype in the `Condition` variable. In order to
+better study the effect of the disease we decided to correct for age by
+including the age variable as a co variate to the model.
+
+-   **CTL.adult**: Control samples for adults
+
+-   **CTL.child**: Control samples for children
+
+-   **AMN**: Adults with the non-cerebral disease condition
+
+-   **cAMN**: Adults with cerebral disease condition
+
+-   **cALD**: Children with cerebral disease condition
+
+
+The distribution of samples in each group is shown in the following
+table:
+
+```{r}
+
+#| label: tbl-Adults-condition
+#| tbl-cap: Disease condition for adults
+ss[,.(Freq=.N),by=Condition]|>kableExtra::kable()
+```
+
+You can also inspect the full interactive sample sheet:
+
+```{r}
+dtable(ss[, .(Sample_Name,barcode,Condition)])
+```
+
+
+#### Differentially methylated counts (DMPs)
+
+```{r}
+#| eval: true
+#| include: false
+dmps_f_m3 <- readRDS("data/dmps_f_m4.rds")
+dt<-as.data.table(dmps_f_m3)
+dt[Contrast == "AMN-CTL.adult",Contrast:= "CTL.adult-AMN"]
+dt[Contrast == "CTL.adult-AMN",diff_meanMeth:=-diff_meanMeth]
+dt[Contrast == "CTL.adult-AMN",t:=-t]
+dt[Contrast == "CTL.adult-AMN",logFC:=-logFC]
+dt<-dt[Contrast %in% c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN")]
+dt[,Contrast:=factor(Contrast,levels = c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN"))]
+```
+
+```{r}
+#| eval: false
+#| include: false
+plotDMP(dt,path="plots/m3")
+```
+
+::: {#fig-dmps-m3 layout-nrow=2 layout-ncol=2}
+
+![DMPs count](plots/m3/DMP_count.png){#fig-dmp-count-m3}
+
+![DMPs count Hyper/Hypo](plots/m3/DMP_count_facet.png){#fig-dmp-facet-m3}
+
+![CGI annotation](plots/m3/DMP_annCGI.png){#fig-dmp-cgi-m3}
+
+![Genomic annotation](plots/m3/DMP_annGenomic.png){#fig-dmp-Genomic-m3}
+
+Differentially Methylated Probes (DMPs) counts & annotation for Model 3
+:::
+
+In order to make comparisons easier from the previous model @sec-Model2 we will look at the DMP counts side by side in the following figure:
+
+```{r}
+#| column: page
+#| layout-nrow: 1
+#| layout-ncol: 2
+library(data.table)
+dt[,gr:=factor(
+  ifelse(
+    Contrast %like% "CTL",
+    ifelse(Contrast == "CTL.child-CTL.adult",
+           "Controls",
+           "Ctl vs disease"),
+    "Disease"))]
+hyper<-dt[,.(Freq=sum(Type=="Hyper"),Type="Hyper"),by=c("Contrast","gr")]
+hypo<-dt[,.(Freq=sum(Type=="Hypo"),Type="Hypo"),by=c("Contrast","gr")]
+DMPresults <- rbind(hyper,hypo)
+
+# plot DMPs (hypo/hyper)
+gr_p2<-ggplot2::ggplot(DMPresults, aes(Contrast, Freq, fill = Type,color=gr)) +
+  geom_bar(position="dodge", stat= "identity",size=1)+
+  # geom_text(aes(label=ifelse(Type == "Hypo", as.character(gr),""), vjust=-1.9)) +
+  geom_text(aes(label = Freq),vjust = -0.5,position=position_dodge(.9))+  
+  scale_color_manual(values=c("#E1B930","#3c8f43", "#395260"))+
+  theme_bw()+
+  scale_fill_manual(values=c("red", "skyblue")) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        strip.text.x = element_text(size = 12))+
+  labs(x = "", y = "count", fill='Methylation')+
+  ggtitle('Differently methylated probes corrected for Age (Model3)')+
+  facet_grid(.~factor(gr),scales = "free_x",space="free",)  
+gr_p1
+gr_p2
+```
+
+
+From the plots above we can see:
+
+- Very similar results to the previous model.
+
+- Effectively removed the effect of age in controls 
+
+- Even more methylation differences (**hypermethylation**) for cALD when compared to controls or cAMN
+
+
+#### Differentially Methylated Regions (DMRs)
+
+There was no region found to be differentially methylated with the
+following parameters:
+
+-   mDiff \> 0.05 a mean difference of at least 0.05 beta value between
+    the groups in the comparison
+
+-   FDR \< 0.01. The FDR score must be smaller than 0.01.
+
+-   min.cpgs \> 2. At least 3 cpgs in the nearby window must be
+    differentially methylated.
+
+#### Pathway analysis
+
+The following table contains the results of the pathway enrichment
+analysis on DMPs:
+
+```{r}
+pathway_dmps_m3<- readRDS("data/dmp_pathways_m4.rds")
+dtable(pathway_dmps_m3)
+```
+
+### **Model 4:** {#sec-Model4}
+
+#### Formula: meth \~ 0 + Type +Age
+
+```{r}
+#| include: false
+
+ss<-readRDS("data/SS.rds")
+```
+
+**Model4** is a simplification model where we compare all controls against all cases without considering different disease phenotypes or age groups.
+We also correct for age here in order to remove Age effects on methylation changes.
+The variable of interest is named `Type` and has only two categories:
+
+-   Control: Healthy samples both for pediatric and adult samples.
+
+-   Disease: Samples with disease phenotype.
+
+The distribution of samples in each group is shown in the following
+table:
+
+```{r}
+
+#| label: tbl-Adults-condition
+#| tbl-cap: Disease condition for adults
+ss[,.(Freq=.N),by=Type]|>kableExtra::kable()
+```
+
+You can also inspect the full interactive sample sheet:
+
+```{r}
+dtable(ss[, .(Sample_Name,barcode,Type)])
+```
+
+
+#### Differentially methylated counts (DMPs)
+
+```{r}
+#| eval: true
+#| include: false
+dmps_f_m4 <- readRDS("data/dmps_f_Model4.rds")
+dt<-as.data.table(dmps_f_m4)
+dt[Contrast == "AMN-CTL.adult",Contrast:= "CTL.adult-AMN"]
+dt[Contrast == "CTL.adult-AMN",diff_meanMeth:=-diff_meanMeth]
+dt[Contrast == "CTL.adult-AMN",t:=-t]
+dt[Contrast == "CTL.adult-AMN",logFC:=-logFC]
+dt<-dt[Contrast %in% c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN")]
+dt[,Contrast:=factor(Contrast,levels = c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN"))]
+```
+
+```{r}
+#| eval: false
+#| include: false
+plotDMP(dt,path="plots/m4")
+```
+
+::: {#fig-dmps-m4 layout-nrow=2 layout-ncol=2}
+
+![DMPs count](plots/m4/DMP_count.png){#fig-dmp-count-m4}
+
+![DMPs count Hyper/Hypo](plots/m4/DMP_count_facet.png){#fig-dmp-facet-m4}
+
+![CGI annotation](plots/m4/DMP_annCGI.png){#fig-dmp-cgi-m4}
+
+![Genomic annotation](plots/m4/DMP_annGenomic.png){#fig-dmp-Genomic-m4}
+
+Differentially Methylated Probes (DMPs) counts & annotation for Model 4
+:::
+
+
+From the plots above we can see:
+
+- less difference observed than in the specific comparisons (likely due to higher hetherogenity in the data)
+- hypomethylation in the disease
+
+#### Differentially Methylated Regions (DMRs)
+
+There was no region found to be differentially methylated with the
+following parameters:
+
+-   mDiff \> 0.05 a mean difference of at least 0.05 beta value between
+    the groups in the comparison
+
+-   FDR \< 0.01. The FDR score must be smaller than 0.01.
+
+-   min.cpgs \> 2. At least 3 cpgs in the nearby window must be
+    differentially methylated.
+
+#### Pathway analysis
+
+The following table contains the results of the pathway enrichment
+analysis on DMPs:
+
+```{r}
+pathway_dmps_m4<- readRDS("data/dmp_pathways_Model4.rds")
+dtable(pathway_dmps_m4)
+```
+
+
+## Discussion
+
+We performed a [Standard methylation
+analysis](standard.qmd#sec-workflow), following our standard analysis
+workflow.
+
+Within the adult group we don't detect significant difference between
+controls and disease. Incorporating children samples, we observe few
+differences between children and adults with cerebral ALD/AMN but none
+in the other age\~phenotype comparisons. Correcting for age (as a
+continous variable) in the analysis, confirms age as the dominating
+factors.
+
+Nevertheless, the amount of changes related to age in XALD where much
+less than expected from previous studies (communication with
+colaborator).
+
+For this reason (and to further study the pattern of age related
+changes) we propose alternative approaches:
+
+1.  Genereate a [regression model with
+    age-corrected](signature.qmd#sec-residuals) beta values, to remove
+    the effect of age from the methylation values.
+2.  Look for specific age signature in our data by predicting
+    [age-related sites within the
+    controls](signature.qmd#sec-inhouseref) and checking for enrichment
+    of those sites in the disease.
+3.  Analysing [previously reported age-related
+    sites](signature.qmd#sec-PBMC) from literature.\
+4.  Reproducing [age-acceleration analysis](horvath.qmd) from existing
+    literature.

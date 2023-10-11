@@ -1,5 +1,5 @@
 ---
-title: "Methylation:  Epigenetic clock"
+title: "Epigenetic clock"
 author: "Izar de Villasante"
 ---
 

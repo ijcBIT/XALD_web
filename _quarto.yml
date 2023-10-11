@@ -33,7 +33,8 @@ website:
     collapse-level: 2
     contents:
       - index.qmd
-      - standard.qmd
+      - href: pages/standard/standard.qmd
+        text: Standard
       - signature.qmd
       - horvath.qmd
       - summary.qmd
@@ -43,6 +44,11 @@ format:
     theme:
       light: [cosmo, theme.scss] # from https://github.com/sta210-s22/website/blob/main/_quarto.yml
       dark: [cosmo, theme-dark.scss]
+    grid:
+      sidebar-width: 300px
+      body-width: 1200px
+      margin-width: 100px
+      gutter-width: 1.5rem
     code-copy: true
     code-overflow: wrap
     code-fold: true
@@ -52,3 +58,5 @@ suppress-bibliography: false
 filters:
   - include-files.lua
   - quarto
+
+freeze: auto
