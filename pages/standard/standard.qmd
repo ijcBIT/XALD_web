@@ -503,7 +503,7 @@ Differentially Methylated Probes (DMPs) counts & annotation for Model 3
 In order to make comparisons easier from the previous model @sec-Model2 we will look at the DMP counts side by side in the following figure:
 
 ```{r}
-#| column: page
+#| column: screen-inset-right
 #| layout-nrow: 1
 #| layout-ncol: 2
 library(data.table)
@@ -610,12 +610,7 @@ dtable(ss[, .(Sample_Name,barcode,Type)])
 #| include: false
 dmps_f_m4 <- readRDS("data/dmps_f_Model4.rds")
 dt<-as.data.table(dmps_f_m4)
-dt[Contrast == "AMN-CTL.adult",Contrast:= "CTL.adult-AMN"]
-dt[Contrast == "CTL.adult-AMN",diff_meanMeth:=-diff_meanMeth]
-dt[Contrast == "CTL.adult-AMN",t:=-t]
-dt[Contrast == "CTL.adult-AMN",logFC:=-logFC]
-dt<-dt[Contrast %in% c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN")]
-dt[,Contrast:=factor(Contrast,levels = c("CTL.child-CTL.adult", "CTL.child-cALD", "CTL.adult-cAMN", "CTL.adult-AMN", "AMN-cAMN", "cALD-cAMN"))]
+
 ```
 
 ```{r}
@@ -642,6 +637,13 @@ From the plots above we can see:
 
 - less difference observed than in the specific comparisons (likely due to higher hetherogenity in the data)
 - hypomethylation in the disease
+
+Bear in mind that the balance between AMN and cerebral condition is uneven, therefore the effect of XALD prevails.
+
+```{r}
+ss[,.("Controls"=sum(Condition %like% "CTL"),"Cerebral ( cAMN & cALD )"=sum(Condition %in% c("cAMN","cALD")),"Non_cerebral ( AMN )"=sum(Condition == "AMN"))] |>kableExtra::kable()
+```
+
 
 #### Differentially Methylated Regions (DMRs)
 
